@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Independent analysis of Uber and Lyft trip economics using NYC TLC public trip records. Explore gross platform take, driver pay, distance, demand, and congestion fees.">
+  <title>NYC Rideshare Economics · Uber vs Lyft</title>
+  <style>
+    :root{--paper:#f7f7f2;--surface:#fff;--ink:#202920;--muted:#667065;--line:#dce0d7;--grid:#e7eae2;--uber:#2a78d6;--lyft:#d6337a;--tint:#edf1e8;--focus:#1b65c3;--radius:3px}
+    :root[data-theme="dark"]{--paper:#131914;--surface:#1c241d;--ink:#edf2e9;--muted:#b0bdaf;--line:#3a473b;--grid:#303c31;--tint:#263327;--focus:#8ebaff}
+    *{box-sizing:border-box}html{scroll-behavior:auto}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.65 "Trebuchet MS","Helvetica Neue","PingFang SC","Microsoft YaHei",sans-serif;font-variant-numeric:tabular-nums}button,input,select{font:inherit}button,select,input{color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}button,select{min-height:40px;padding:7px 11px}button{cursor:pointer}button:hover{border-color:var(--muted)}a{color:var(--ink);text-underline-offset:4px}a:hover{color:var(--uber)}:focus-visible{outline:3px solid var(--focus);outline-offset:3px}button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}.skip{position:absolute;left:20px;top:-80px;background:var(--surface);padding:10px;z-index:10}.skip:focus{top:10px}.wrap{max-width:1240px;margin:0 auto;padding:0 42px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:22px;padding-bottom:22px;border-bottom:1px solid var(--line)}.wordmark{font-size:12px;font-weight:bold;letter-spacing:.11em;text-transform:uppercase;display:flex;align-items:center;gap:10px}.mark{display:inline-flex;gap:3px;align-items:center}.mark i{display:block;width:6px;height:22px;background:var(--uber)}.mark i:last-child{height:15px;background:var(--lyft)}.tools{display:flex;gap:7px;align-items:center}.tools button{font-size:12px;min-height:34px;padding:4px 10px}.tools a{font-size:12px;margin-left:9px}.hero{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:60px;padding-top:62px;padding-bottom:42px}.eyebrow{font-size:11px;letter-spacing:.13em;text-transform:uppercase;font-weight:bold;color:var(--muted);margin:0 0 14px}.hero h1{font:normal clamp(38px,5.7vw,72px)/1.05 Georgia,"Songti SC",serif;letter-spacing:-.045em;margin:0 0 22px;max-width:780px}.hero .subtitle{max-width:690px;color:var(--muted);font-size:16px;margin:0}.hero aside{align-self:end;border-top:3px solid var(--ink);padding-top:17px}.equation{font-size:17px;line-height:1.5;font-weight:bold;margin:0 0 10px}.small{font-size:12px;color:var(--muted);line-height:1.65}.hero aside p:last-child{margin-bottom:0}.legend{display:flex;gap:18px;align-items:center;font-size:12px;margin:18px 0 0}.legend span{display:inline-flex;gap:7px;align-items:center}.dot{width:8px;height:8px;border-radius:50%;display:inline-block}.uber{color:var(--uber)}.lyft{color:var(--lyft)}.period-line{display:flex;justify-content:space-between;gap:20px;align-items:center;border-top:1px solid var(--line);padding-top:16px;font-size:12px;color:var(--muted)}.period-label{font-weight:bold;color:var(--ink)}.kpis{display:grid;grid-template-columns:repeat(4,1fr);margin-top:17px;margin-bottom:42px;background:var(--surface);border:1px solid var(--line)}.kpi{padding:24px 22px;min-width:0;border-right:1px solid var(--line)}.kpi:last-child{border-right:0}.kpi-label{font-size:12px;color:var(--muted);margin:0 0 8px}.kpi-value{font:normal clamp(25px,3.2vw,40px)/1.15 Georgia,serif;letter-spacing:-.03em;margin:0}.kpi-note{font-size:11px;color:var(--muted);margin:8px 0 0}.section{border-top:1px solid var(--line);padding-top:27px;margin-bottom:40px;scroll-margin-top:20px}.section-head{display:flex;justify-content:space-between;align-items:start;gap:24px;margin-bottom:18px}.section h2{font:normal 29px/1.2 Georgia,"Songti SC",serif;letter-spacing:-.025em;margin:0 0 8px}.section-number{font-size:11px;letter-spacing:.1em;color:var(--muted);margin:0 0 10px}.section-desc{color:var(--muted);font-size:13px;max-width:730px;margin:0}.control-group{display:flex;gap:9px;align-items:end;flex-wrap:wrap}.control{display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--muted)}.control select{font-size:12px;max-width:260px}.plot{background:var(--surface);border:1px solid var(--line);padding:20px 18px 12px;min-width:0}.plot svg{display:block;width:100%;height:auto;overflow:visible}.plot .plot-caption{margin:10px 0 0;font-size:11px;color:var(--muted)}.plot text{fill:var(--muted);font:11px "Trebuchet MS","PingFang SC",sans-serif}.plot .grid{stroke:var(--grid);stroke-width:1}.plot .axis{stroke:var(--line);stroke-width:1}.plot .endpoint{font-size:12px;font-weight:bold}.plot .annotation{font-size:11px}.twocol{display:grid;grid-template-columns:1fr 1fr;gap:24px}.twocol .section-head{min-height:112px;display:block}.twocol .control-group{margin-top:14px}.heat-key{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:12px;font-size:11px;color:var(--muted)}.scale{display:block;height:7px;width:100px;border-radius:2px}.policy{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:0 0 20px}.note{background:var(--tint);border-left:3px solid var(--muted);padding:16px 18px;font-size:12px;color:var(--muted)}.note strong{color:var(--ink)}.note p{margin:0}.note p+p{margin-top:7px}.table-wrap{overflow:auto;border:1px solid var(--line);background:var(--surface)}table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}th,td{padding:12px 13px;text-align:right;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}thead th{font-size:11px;color:var(--muted);font-weight:normal;background:var(--tint);position:sticky;top:0}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:var(--tint)}th button{border:0;background:transparent;padding:0;min-height:26px;color:inherit;font-size:11px}th button:hover{color:var(--ink)}.table-controls{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:12px}.search{width:min(100%,340px);min-height:41px;padding:8px 12px}.table-count{font-size:11px;color:var(--muted);margin-top:9px}.methods{display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;margin-top:20px}.methods h3{font-size:13px;margin:0 0 8px}.methods p{font-size:12px;color:var(--muted);margin:0}.footer{display:flex;justify-content:space-between;gap:25px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:23px;padding-bottom:35px;font-size:11px;color:var(--muted)}.footer a{color:var(--muted)}.footer-links{display:flex;gap:20px}.tooltip{position:fixed;background:var(--ink);color:var(--paper);border-radius:3px;box-shadow:0 4px 18px #0002;padding:9px 12px;font-size:12px;line-height:1.55;z-index:20;pointer-events:none;max-width:260px;white-space:pre-line;display:none}.tooltip.visible{display:block}.empty{min-height:170px;display:grid;place-items:center;color:var(--muted);font-size:13px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.zone-table{max-height:510px}.zone-table td:nth-child(2),.zone-table th:nth-child(2){text-align:left}.zone-table td:nth-child(3),.zone-table th:nth-child(3){text-align:left}.zone-table td:first-child{max-width:260px;overflow:hidden;text-overflow:ellipsis}.navline{display:flex;flex-wrap:wrap;gap:22px;margin:0 0 30px;font-size:12px}.navline a{text-decoration:none;color:var(--muted)}.navline a:hover{color:var(--ink)}
+    @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#131914;--surface:#1c241d;--ink:#edf2e9;--muted:#b0bdaf;--line:#3a473b;--grid:#303c31;--tint:#263327;--focus:#8ebaff}}
+    @media(max-width:850px){.wrap{padding-left:24px;padding-right:24px}.hero{grid-template-columns:1fr;gap:26px;padding-top:40px}.hero aside{max-width:500px}.kpi{padding:20px 15px}.twocol{grid-template-columns:1fr}.twocol .section-head{min-height:0;display:flex}.policy{grid-template-columns:1fr}.methods{grid-template-columns:1fr;gap:19px}.section-head{flex-wrap:wrap}.section h2{font-size:26px}.plot{padding:17px 12px 11px}}
+    @media(max-width:520px){.wrap{padding-left:17px;padding-right:17px}.topbar{gap:10px}.wordmark{font-size:9px;letter-spacing:.06em}.tools{gap:5px}.tools a{display:none}.tools button{font-size:11px;padding:4px 7px}.hero h1{font-size:44px}.hero{padding-bottom:26px}.hero .subtitle{font-size:14px}.kpis{grid-template-columns:1fr 1fr;margin-bottom:30px}.kpi{border-bottom:1px solid var(--line)}.kpi:nth-child(2){border-right:0}.kpi:nth-child(n+3){border-bottom:0}.kpi-value{font-size:31px}.period-line{align-items:start;flex-direction:column;gap:5px}.section-head,.twocol .section-head{display:block}.control-group{margin-top:13px}.table-controls{display:block}.table-controls .control{margin-top:10px}.policy{gap:13px}.navline{gap:15px;font-size:11px}.plot text{font-size:12px}.plot .endpoint{font-size:13px}.section{margin-bottom:30px}.footer-links{gap:12px;flex-wrap:wrap}}
+    @media print{.tools,.control-group,.navline,.tooltip{display:none}.wrap{padding:0 15px}.section{break-inside:avoid}.hero{padding-top:20px}.plot{background:white}.zone-table{max-height:none}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main" data-i18n="skip">Skip to analysis</a>
+  <header class="wrap topbar">
+    <div class="wordmark"><span class="mark" aria-hidden="true"><i></i><i></i></span><span data-i18n="wordmark">Independent project / NYC TLC</span></div>
+    <div class="tools"><button id="language" type="button" aria-label="Switch to Chinese">中文</button><button id="theme" type="button" data-i18n="theme">Dark mode</button><a href="https://github.com/hql7-luo/rideshare-platform-economics">GitHub ↗</a></div>
+  </header>
+  <main id="main" class="wrap">
+    <section class="hero" aria-labelledby="page-title">
+      <div><p class="eyebrow" data-i18n="heroKicker">Pricing · Driver pay · Platform take</p><h1 id="page-title">NYC Rideshare<br>Economics</h1><p class="subtitle" data-i18n="heroSubtitle">What stays with Uber and Lyft after a New York ride? An independent look at fare growth, driver pay, and the congestion zone.</p><div class="legend"><span><i class="dot" style="background:var(--uber)" aria-hidden="true"></i>Uber</span><span><i class="dot" style="background:var(--lyft)" aria-hidden="true"></i>Lyft</span></div></div>
+      <aside><p class="eyebrow" data-i18n="definitionLabel">The measure used here</p><p class="equation" data-i18n="equation">Gross take = base fare − driver pay</p><p class="small" data-i18n="definition">Before insurance, payment costs, marketing, and incentives. Excludes tips, tolls, taxes, and surcharges. This is not profit.</p></aside>
+    </section>
+    <div class="period-line"><span><span class="period-label" data-i18n="snapshotLabel">Recent 12 months</span> <span id="snapshot-period"></span></span><span id="coverage-line"></span></div>
+    <section class="kpis" id="kpis" aria-label="Recent 12 month key figures"></section>
+    <nav class="navline" aria-label="Analysis sections"><a href="#trends" data-i18n="navTrends">Monthly trends</a><a href="#segments" data-i18n="navSegments">Distance & timing</a><a href="#congestion" data-i18n="navCongestion">Congestion zone</a><a href="#zones" data-i18n="navZones">Pickup areas</a><a href="#methods" data-i18n="navMethods">Method & limits</a></nav>
+    <section id="trends" class="section" aria-labelledby="trend-heading">
+      <div class="section-head"><div><p class="section-number">01 / <span data-i18n="trendEyebrow">THE LONG VIEW</span></p><h2 id="trend-heading" data-i18n="trendTitle">Follow the economics of a ride.</h2><p class="section-desc" data-i18n="trendDesc">Monthly observations, aggregated separately for Uber and Lyft. Take rate is the ratio of total take to total base fare.</p></div><div class="control-group"><label class="control"><span data-i18n="metric">Metric</span><select id="trend-metric"></select></label></div></div>
+      <div class="plot"><div id="trend-chart"></div><p class="plot-caption" id="trend-caption"></p></div>
+    </section>
+    <div id="segments" class="twocol">
+      <section class="section" aria-labelledby="distance-heading"><div class="section-head"><div><p class="section-number">02 / <span data-i18n="distanceEyebrow">TRIP DISTANCE</span></p><h2 id="distance-heading" data-i18n="distanceTitle">Short rides, different economics.</h2><p class="section-desc" data-i18n="recentPeriodNote">All segments use the recent 12-month window shown above.</p></div><div class="control-group"><label class="control"><span data-i18n="metric">Metric</span><select id="distance-metric"></select></label></div></div><div class="plot"><div id="distance-chart"></div><p class="plot-caption" data-i18n="distanceCaption">Distance bins are in miles. Rates use pooled totals; negative take means recorded driver pay exceeded the base fare.</p></div></section>
+      <section class="section" aria-labelledby="heat-heading"><div class="section-head"><div><p class="section-number">03 / <span data-i18n="heatEyebrow">WHEN PEOPLE RIDE</span></p><h2 id="heat-heading" data-i18n="heatTitle">The weekly operating rhythm.</h2><p class="section-desc" data-i18n="heatDesc">Pickup time in New York local time. Hover or focus a cell for its value.</p></div><div class="control-group"><label class="control"><span data-i18n="company">Company</span><select id="heat-company"><option>Uber</option><option>Lyft</option></select></label><label class="control"><span data-i18n="metric">Metric</span><select id="heat-metric"></select></label></div></div><div class="plot"><div id="heat-chart"></div><div class="heat-key"><span id="heat-min"></span><i id="heat-scale" class="scale" aria-hidden="true"></i><span id="heat-max"></span></div><p class="plot-caption" data-i18n="heatCaption">Volume is the count in each weekday × hour cell across the full recent window, not the average of one hour.</p></div></section>
+    </div>
+    <section id="congestion" class="section" aria-labelledby="congestion-heading"><div class="section-head"><div><p class="section-number">04 / <span data-i18n="congestionEyebrow">THE CONGESTION ZONE</span></p><h2 id="congestion-heading" data-i18n="congestionTitle">Separate the fee from the economics.</h2><p class="section-desc" data-i18n="congestionDesc">Compare the same calendar months in 2024 and 2025, excluding January. “Zone-linked” means either endpoint is in the data-inferred zone.</p></div><div class="control-group"><label class="control"><span data-i18n="company">Company</span><select id="congestion-company"><option>Uber</option><option>Lyft</option></select></label></div></div>
+      <div class="policy"><div class="note"><p><strong data-i18n="policyTitle">A rider charge, under the rule</strong></p><p data-i18n="policyBody">From January 5, 2025, the CBD toll adds $1.50 per Uber/Lyft passenger trip in, out of, within, or through the zone. This charge is separate from base fare and the older congestion surcharge.</p></div><div class="note"><p><strong data-i18n="cautionTitle">A descriptive comparison</strong></p><p data-i18n="cautionBody">Changes in fare, driver pay, gross take, and demand do not identify who ultimately bears the economic cost. Pricing changes, minimum-pay rules, seasonality, and changing trip mix also matter.</p></div></div>
+      <div class="note" style="margin-bottom:20px"><p><strong data-i18n="geographyTitle">The inferred geography has edge cases</strong></p><p id="congestion-geography"></p></div>
+      <div class="table-wrap"><table id="congestion-table"></table></div><p class="small" id="congestion-period"></p>
+      <div class="plot" style="margin-top:19px"><div id="congestion-chart"></div><p class="plot-caption" data-i18n="congestionChartCaption">Monthly average speed, calculated as total miles ÷ total trip hours. Zone-linked and other trips can differ in their routes and mix.</p></div>
+    </section>
+    <section id="zones" class="section" aria-labelledby="zones-heading"><div class="section-head"><div><p class="section-number">05 / <span data-i18n="zonesEyebrow">WHERE TO LOOK NEXT</span></p><h2 id="zones-heading" data-i18n="zonesTitle">The pickup-area view.</h2><p class="section-desc" data-i18n="zonesDesc">Search every reported pickup area. Click a column to sort. Each row is one company × pickup zone in the recent 12-month window.</p></div></div><div class="table-controls"><label class="control"><span data-i18n="searchLabel">Search zone, borough, or company</span><input id="zone-search" class="search" type="search" autocomplete="off" placeholder="e.g. Midtown, Queens, Lyft"></label><label class="control"><span data-i18n="company">Company</span><select id="zone-company"><option value="all" data-i18n="bothCompanies">Both companies</option><option>Uber</option><option>Lyft</option></select></label></div><div class="table-wrap zone-table"><table id="zone-table"></table></div><p id="zone-count" class="table-count" aria-live="polite"></p></section>
+    <section id="methods" class="section" aria-labelledby="methods-heading"><p class="section-number">06 / <span data-i18n="methodsEyebrow">READ THE NUMBERS WITH CARE</span></p><h2 id="methods-heading" data-i18n="methodsTitle">Definitions, coverage, and limits.</h2><div class="methods"><div><h3 data-i18n="methodSourceTitle">Public records, processed monthly</h3><p id="method-source"></p></div><div><h3 data-i18n="methodCleanTitle">A consistent trip filter</h3><p data-i18n="methodClean">Keep base fare > $0, driver pay ≥ $0, distance > 0 and ≤ 100 miles, duration 1–240 minutes, and a pickup month matching the file. Wait averages use only waits from 0 to 60 minutes.</p></div><div><h3 data-i18n="methodLimitsTitle">Gross revenue is not profit</h3><p data-i18n="methodLimits">Dollar values are nominal. Take excludes operating costs; rewards and rider discounts may not be fully captured. Results describe recorded trips, not total driver earnings or causal policy effects. Platform shares cover Uber and Lyft only.</p></div></div><p class="small" id="inference-note" style="margin-top:20px"></p><p class="small"><a href="https://github.com/hql7-luo/rideshare-platform-economics/blob/main/docs/memo.md" data-i18n="memoLink">Read the bilingual decision memo ↗</a> · <a href="https://github.com/hql7-luo/rideshare-platform-economics/blob/main/docs/methodology.md" data-i18n="methodologyLink">Detailed methodology ↗</a> · <a href="https://github.com/hql7-luo/rideshare-platform-economics/blob/main/docs/sources.md" data-i18n="sourcesLink">Source notes & policy checks ↗</a></p></section>
+  </main>
+  <footer class="wrap footer"><span data-i18n="footer">Independent project by hql7-luo. Data: NYC Taxi & Limousine Commission.</span><span class="footer-links"><a href="https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page" data-i18n="tlcLink">TLC trip records</a><a href="https://github.com/hql7-luo/rideshare-platform-economics" data-i18n="repoLink">Data, SQL & code</a><a href="https://hql7-luo.github.io/rideshare-platform-economics/" data-i18n="liveLink">Published explorer</a></span></footer>
+  <div id="tooltip" class="tooltip" role="tooltip"></div>
+  <script id="results-data" type="application/json">__RESULTS_JSON__</script>
+  <script>
+  /* Render the saved result tables; this page never fetches data or libraries. */
+  'use strict';
+  const data = JSON.parse(document.getElementById('results-data').textContent);
+  const colors = {Uber:'#2a78d6',Lyft:'#d6337a'};
+  const words = {
+    en:{skip:'Skip to analysis',wordmark:'Independent project / NYC TLC',theme:'Dark mode',lightTheme:'Light mode',heroKicker:'Pricing · Driver pay · Platform take',heroSubtitle:'What stays with Uber and Lyft after a New York ride? An independent look at fare growth, driver pay, and the congestion zone.',definitionLabel:'The measure used here',equation:'Gross take = base fare − driver pay',definition:'Before insurance, payment costs, marketing, and incentives. Excludes tips, tolls, taxes, and surcharges. This is not profit.',snapshotLabel:'Recent 12 months',navTrends:'Monthly trends',navSegments:'Distance & timing',navCongestion:'Congestion zone',navZones:'Pickup areas',navMethods:'Method & limits',trendEyebrow:'THE LONG VIEW',trendTitle:'Follow the economics of a ride.',trendDesc:'Monthly observations, aggregated separately for Uber and Lyft. Take rate is the ratio of total take to total base fare.',metric:'Metric',company:'Company',distanceEyebrow:'TRIP DISTANCE',distanceTitle:'Short rides, different economics.',recentPeriodNote:'All segments use the recent 12-month window shown above.',distanceCaption:'Distance bins are in miles. Rates use pooled totals; negative take means recorded driver pay exceeded the base fare.',heatEyebrow:'WHEN PEOPLE RIDE',heatTitle:'The weekly operating rhythm.',heatDesc:'Pickup time in New York local time. Hover or focus a cell for its value.',heatCaption:'Volume is the count in each weekday × hour cell across the full recent window, not the average of one hour.',congestionEyebrow:'THE CONGESTION ZONE',congestionTitle:'Separate the fee from the economics.',congestionDesc:'Compare the same calendar months in 2024 and 2025, excluding January. “Zone-linked” means either endpoint is in the data-inferred zone.',policyTitle:'A rider charge, under the rule',policyBody:'From January 5, 2025, the CBD toll adds $1.50 per Uber/Lyft passenger trip in, out of, within, or through the zone. This charge is separate from base fare and the older congestion surcharge.',cautionTitle:'A descriptive comparison',cautionBody:'Changes in fare, driver pay, gross take, and demand do not identify who ultimately bears the economic cost. Pricing changes, minimum-pay rules, seasonality, and changing trip mix also matter.',congestionChartCaption:'Monthly average speed, calculated as total miles ÷ total trip hours. Zone-linked and other trips can differ in their routes and mix.',zonesEyebrow:'WHERE TO LOOK NEXT',zonesTitle:'The pickup-area view.',zonesDesc:'Search every reported pickup area. Click a column to sort. Each row is one company × pickup zone in the recent 12-month window.',searchLabel:'Search zone, borough, or company',bothCompanies:'Both companies',methodsEyebrow:'READ THE NUMBERS WITH CARE',methodsTitle:'Definitions, coverage, and limits.',methodSourceTitle:'Public records, processed monthly',methodCleanTitle:'A consistent trip filter',methodClean:'Keep base fare > $0, driver pay ≥ $0, distance > 0 and ≤ 100 miles, duration 1–240 minutes, and a pickup month matching the file. Wait averages use only waits from 0 to 60 minutes.',methodLimitsTitle:'Gross revenue is not profit',methodLimits:'Dollar values are nominal. Take excludes operating costs; rewards and rider discounts may not be fully captured. Results describe recorded trips, not total driver earnings or causal policy effects. Platform shares cover Uber and Lyft only.',memoLink:'Read the bilingual decision memo ↗',sourcesLink:'Source notes & policy checks ↗',footer:'Independent project by hql7-luo. Data: NYC Taxi & Limousine Commission.',tlcLink:'TLC trip records',repoLink:'Data, SQL & code',liveLink:'Published explorer',trips:'Trips',share:'Uber/Lyft share',fare_per_trip:'Base fare / trip',driver_pay_per_trip:'Driver pay / trip',take_per_trip:'Gross take / trip',take_rate:'Gross take rate',avg_wait_minutes:'Average wait',fare_per_mile:'Base fare / mile',speed_mph:'Average speed',duration_minutes:'Average duration',negative_take_share:'Driver pay > fare',zone:'Pickup zone',borough:'Borough',zone_group:'Trip group',zoneLinked:'Zone-linked',other:'Other trips',gap:'Difference in changes',yoy:'Year-over-year change',metricCol:'Measure',zoneChange:'Zone-linked change',otherChange:'Other-trip change',noData:'No observations available for this selection.',rows:'rows',countNote:'Matching rows / all rows',sample:'Sampled 2019–2022; monthly from 2023',full:'Monthly coverage',latest:'Latest file',pooled:'Pooled recent-window totals',rateNote:'Total gross take ÷ total base fare',shareNote:'Within Uber + Lyft trips only',nominal:'USD, nominal',minutes:'min',miles:'miles',mph:'mph',observed:'Observed months only. Hover or focus a point for its value.',weighted:'Ratios use pooled sums, not averages of trip-level percentages.',period:'Matched comparison period',pp:'pp',days:['Mon','Tue','Wed','Thu','Fri','Sat','Sun']},
+    zh:{skip:'跳转到分析',wordmark:'独立项目 / NYC TLC',theme:'深色模式',lightTheme:'浅色模式',heroKicker:'乘客车费 · 司机收入 · 平台抽成',heroSubtitle:'纽约每完成一单，Uber 和 Lyft 留下多少钱？用真实行程数据观察车费、司机收入，以及拥堵区内外的变化。',definitionLabel:'本项目使用的口径',equation:'毛额抽成 = 基础车费 − 司机收入',definition:'尚未扣除保险、支付手续费、营销和激励。不含小费、过路费、税费和附加费。这不是利润。',snapshotLabel:'最近 12 个月',navTrends:'月度趋势',navSegments:'距离与时段',navCongestion:'拥堵区对比',navZones:'上车区域',navMethods:'方法与局限',trendEyebrow:'长期变化',trendTitle:'看清每一单的收入分配。',trendDesc:'按月分别汇总 Uber 和 Lyft。抽成率等于抽成总额除以基础车费总额。',metric:'指标',company:'公司',distanceEyebrow:'行程距离',distanceTitle:'短途单，收入结构也不同。',recentPeriodNote:'所有分段均使用上方标注的最近 12 个月。',distanceCaption:'距离单位为英里。比率由汇总总额计算；负抽成指记录中的司机收入高于基础车费。',heatEyebrow:'出行时段',heatTitle:'一周中的运营节奏。',heatDesc:'使用纽约当地上车时间。悬停或聚焦单元格查看数值。',heatCaption:'订单量是最近 12 个月内各“星期 × 小时”组合的总单量，不是单个小时的平均值。',congestionEyebrow:'拥堵区',congestionTitle:'分开理解收费与收入变化。',congestionDesc:'比较 2024 和 2025 的相同月份，跳过一月。“区内关联”指起点或终点位于数据识别出的区域。',policyTitle:'规则上向乘客收取',policyBody:'自 2025 年 1 月 5 日起，在拥堵区内、进出或穿过该区的 Uber/Lyft 乘客行程，每单加收 $1.50。这笔费用独立于基础车费及此前已存在的拥堵附加费。',cautionTitle:'这是描述性比较',cautionBody:'车费、司机收入、抽成和需求的变化，无法证明经济成本最终由谁承担。平台调价、最低收入规则、季节因素和行程结构变化同样影响结果。',congestionChartCaption:'月平均速度 = 总英里数 ÷ 总行程小时。区内关联与其他行程的路线和构成可能不同。',zonesEyebrow:'下一步看哪里',zonesTitle:'从上车区域寻找运营线索。',zonesDesc:'可搜索所有有记录的区域，点击表头排序。每一行代表最近 12 个月中的一个“公司 × 上车区域”组合。',searchLabel:'搜索区域、行政区或公司',bothCompanies:'两家公司',methodsEyebrow:'如何理解这些数字',methodsTitle:'定义、覆盖范围与局限。',methodSourceTitle:'逐月处理的公开记录',methodCleanTitle:'一致的行程筛选',methodClean:'保留基础车费 > $0、司机收入 ≥ $0、距离 > 0 且 ≤ 100 英里、时长 1–240 分钟且上车月份与文件月份一致的行程。等待时间均值仅使用 0–60 分钟的有效值。',methodLimitsTitle:'毛额收入并非利润',methodLimits:'美元金额未经通胀调整。抽成未扣运营成本，奖励和乘客优惠可能未完整体现。结果描述记录中的行程，不代表司机全部收入，也不识别政策因果效应。平台份额仅在 Uber 与 Lyft 之间计算。',memoLink:'阅读中英双语决策备忘录 ↗',sourcesLink:'数据来源与政策核对 ↗',footer:'hql7-luo 独立项目。数据来源：纽约市出租车与礼车委员会（NYC TLC）。',tlcLink:'TLC 行程数据',repoLink:'数据、SQL 与代码',liveLink:'已发布交互页面',trips:'订单量',share:'Uber/Lyft 内部份额',fare_per_trip:'每单基础车费',driver_pay_per_trip:'每单司机收入',take_per_trip:'每单毛额抽成',take_rate:'毛额抽成率',avg_wait_minutes:'平均等待时间',fare_per_mile:'每英里基础车费',speed_mph:'平均速度',duration_minutes:'平均时长',negative_take_share:'司机收入高于车费占比',zone:'上车区域',borough:'行政区',zone_group:'行程分组',zoneLinked:'区内关联行程',other:'其他行程',gap:'变化之差',yoy:'同比变化',metricCol:'指标',zoneChange:'区内关联同比',otherChange:'其他行程同比',noData:'该选项暂无观测值。',rows:'行',countNote:'匹配行数 / 全部行数',sample:'2019–2022 年抽样；2023 年起逐月',full:'逐月覆盖',latest:'最新文件',pooled:'最近 12 个月汇总',rateNote:'总毛额抽成 ÷ 总基础车费',shareNote:'仅在 Uber + Lyft 行程内计算',nominal:'名义美元',minutes:'分钟',miles:'英里',mph:'英里/时',observed:'仅绘制已观测月份；悬停或聚焦数据点查看数值。',weighted:'比率由总额计算，不是各行程百分比的平均值。',period:'同月对比期间',pp:'百分点',days:['周一','周二','周三','周四','周五','周六','周日']}
+  };
+  let language = 'en';
+  let sortColumn = 'trips';
+  let sortDirection = -1;
+  const metricTypes = {trips:'count',share:'percent',fare_per_trip:'money',driver_pay_per_trip:'money',take_per_trip:'money',take_rate:'percent',avg_wait_minutes:'minutes',fare_per_mile:'money',speed_mph:'speed',duration_minutes:'minutes',negative_take_share:'percent'};
+
+  function translate(key){return words[language][key] || key;}
+  function readNumber(value){return value === '' || value === null || value === undefined ? null : Number(value);}
+  function escapeText(value){return String(value ?? '').replace(/[&<>"']/g,character=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));}
+  function formatNumber(value, digits=1){return Number(value).toLocaleString(language==='zh'?'zh-CN':'en-US',{maximumFractionDigits:digits,minimumFractionDigits:digits});}
+  function formatValue(value, metric, compact=false){
+    const number = readNumber(value);
+    if(number===null || !Number.isFinite(number)) return '—';
+    const type = metricTypes[metric];
+    if(type==='count'){
+      if(compact && Math.abs(number)>=1000000) return formatNumber(number/1000000,1)+'M';
+      if(compact && Math.abs(number)>=1000) return formatNumber(number/1000,0)+'k';
+      return formatNumber(number,0);
+    }
+    if(type==='percent') return formatNumber(number*100,1)+'%';
+    if(type==='money') return '$'+formatNumber(number,2);
+    if(type==='minutes') return formatNumber(number,1)+(compact?'':' '+translate('minutes'));
+    if(type==='speed') return formatNumber(number,1)+(compact?'':' '+translate('mph'));
+    return formatNumber(number,1);
+  }
+  function formatMonth(month){const [year,number]=String(month).slice(0,7).split('-');return language==='zh'?`${year}年${Number(number)}月`:`${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][Number(number)-1]} ${year}`;}
+  function readMonthPosition(month){return Date.parse(String(month).slice(0,7)+'-15T12:00:00Z');}
+  function setOptions(id, metrics){const select=document.getElementById(id),selected=select.value;select.innerHTML=metrics.map(metric=>`<option value="${metric}">${escapeText(translate(metric))}</option>`).join('');if(metrics.includes(selected))select.value=selected;}
+  function showEmpty(id){document.getElementById(id).innerHTML=`<div class="empty">${escapeText(translate('noData'))}</div>`;}
+  function makeSvg(width,height,label,content){return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeText(label)}"><title>${escapeText(label)}</title>${content}</svg>`;}
+  function addHover(content,label){return `tabindex="0" data-tooltip="${escapeText(label)}" aria-label="${escapeText(label)}" ${content}><title>${escapeText(label)}</title>`;}
+
+  /* Use the same scale across companies within each chart. */
+  function calculateRange(values,includeZero=false){
+    const valid=values.map(readNumber).filter(value=>value!==null && Number.isFinite(value));
+    let low=valid.length?Math.min(...valid):0,high=valid.length?Math.max(...valid):1;
+    if(includeZero){low=Math.min(0,low);high=Math.max(0,high);}
+    if(low===high){low-=Math.abs(low)*.1||.1;high+=Math.abs(high)*.1||.1;}
+    const pad=(high-low)*.1;
+    return [includeZero&&low===0?0:low-pad,high+pad];
+  }
+  function drawAxes(width,height,margins,range,metric){
+    let content='';const bottom=height-margins.bottom,top=margins.top,right=width-margins.right;
+    for(let index=0;index<=4;index++){
+      const value=range[0]+(range[1]-range[0])*index/4;
+      const y=bottom-(bottom-top)*index/4;
+      content+=`<line class="grid" x1="${margins.left}" y1="${y}" x2="${right}" y2="${y}"/><text text-anchor="end" x="${margins.left-10}" y="${y+4}">${escapeText(formatValue(value,metric,true))}</text>`;
+    }
+    return content;
+  }
+  function renderTrend(){
+    const metric=document.getElementById('trend-metric').value;
+    const rows=data.monthly.filter(row=>readNumber(row[metric])!==null);
+    if(!rows.length){showEmpty('trend-chart');return;}
+    const width=Math.max(300,document.getElementById('trend-chart').clientWidth),height=width<600?285:330,margins={left:width<600?53:68,right:width<600?66:90,top:25,bottom:40};
+    const months=[...new Set(rows.map(row=>String(row.month).slice(0,7)))].sort();
+    const start=readMonthPosition(months[0]),end=readMonthPosition(months.at(-1));
+    const range=calculateRange(rows.map(row=>row[metric]),metric==='trips'||metric==='share');
+    const getX=month=>margins.left+(readMonthPosition(month)-start)/Math.max(1,end-start)*(width-margins.left-margins.right);
+    const getY=value=>height-margins.bottom-(Number(value)-range[0])/(range[1]-range[0])*(height-margins.top-margins.bottom);
+    let content=drawAxes(width,height,margins,range,metric);
+    const tickCount=width<600?3:7;
+    const tickMonths=months.filter((month,index)=>index===0||index===months.length-1||index%Math.max(1,Math.ceil(months.length/tickCount))===0);
+    tickMonths.forEach(month=>{content+=`<text text-anchor="middle" x="${getX(month)}" y="${height-12}">${escapeText(formatMonth(month))}</text>`;});
+    ['Uber','Lyft'].forEach(company=>{
+      const companyRows=rows.filter(row=>row.company===company).sort((a,b)=>a.month.localeCompare(b.month));
+      if(!companyRows.length)return;
+      const path=companyRows.map((row,index)=>`${index?'L':'M'}${getX(row.month).toFixed(2)},${getY(row[metric]).toFixed(2)}`).join(' ');
+      content+=`<path d="${path}" fill="none" stroke="${colors[company]}" stroke-width="2"/>`;
+      companyRows.forEach(row=>{
+        const label=`${company} · ${formatMonth(row.month)}\n${translate(metric)}: ${formatValue(row[metric],metric)}`;
+        content+=`<circle ${addHover(`cx="${getX(row.month)}" cy="${getY(row[metric])}" r="5" fill="${colors[company]}" fill-opacity="0.01" stroke="transparent"`,label)}</circle>`;
+      });
+      const last=companyRows.at(-1);let labelY=getY(last[metric]);
+      const other=rows.find(row=>row.month===last.month&&row.company!==company);
+      if(other&&Math.abs(getY(other[metric])-labelY)<21)labelY+=company==='Uber'?-10:12;
+      content+=`<circle cx="${getX(last.month)}" cy="${getY(last[metric])}" r="3" fill="${colors[company]}"/><text class="endpoint" x="${getX(last.month)+10}" y="${labelY+4}" style="fill:${colors[company]}">${escapeText(formatValue(last[metric],metric,true))}</text>`;
+    });
+    document.getElementById('trend-chart').innerHTML=makeSvg(width,height,`${translate(metric)} · Uber / Lyft`,content);
+    const unit=metricTypes[metric]==='minutes'?translate('minutes'):metricTypes[metric]==='speed'?translate('mph'):'';
+    const unitNote=unit?(language==='zh'?`纵轴单位：${unit}。 `:`Vertical axis unit: ${unit}. `):'';
+    document.getElementById('trend-caption').textContent=unitNote+translate('observed')+' '+translate('weighted');
+  }
+  function renderDistance(){
+    const metric=document.getElementById('distance-metric').value,bins=['0-1','1-2','2-3','3-5','5-10','10-20','20+'];
+    const rows=data.distance;if(!rows.length){showEmpty('distance-chart');return;}
+    const width=Math.max(300,document.getElementById('distance-chart').clientWidth),height=300,margins={left:width<450?52:63,right:10,top:20,bottom:41};
+    const range=calculateRange(rows.map(row=>row[metric]),true),plotWidth=width-margins.left-margins.right;
+    const getY=value=>height-margins.bottom-(Number(value)-range[0])/(range[1]-range[0])*(height-margins.top-margins.bottom);
+    const zero=getY(0),step=plotWidth/bins.length,barWidth=step*.31;
+    let content=drawAxes(width,height,margins,range,metric);
+    bins.forEach((bin,index)=>{
+      const x=margins.left+step*(index+.5);
+      content+=`<text text-anchor="middle" x="${x}" y="${height-13}">${bin}</text>`;
+      ['Uber','Lyft'].forEach((company,companyIndex)=>{
+        const row=rows.find(row=>row.company===company&&row.distance_bin===bin);if(!row||readNumber(row[metric])===null)return;
+        const y=getY(row[metric]),barX=x+(companyIndex-1)*barWidth+companyIndex*2;
+        const label=`${company} · ${bin} ${translate('miles')}\n${translate(metric)}: ${formatValue(row[metric],metric)}\n${translate('trips')}: ${formatValue(row.trips,'trips')}`;
+        content+=`<rect ${addHover(`x="${barX}" y="${Math.min(zero,y)}" width="${barWidth}" height="${Math.max(1,Math.abs(zero-y))}" fill="${colors[company]}"`,label)}</rect>`;
+      });
+    });
+    document.getElementById('distance-chart').innerHTML=makeSvg(width,height,`${translate(metric)} · ${translate('distanceEyebrow')}`,content);
+  }
+  function renderHeatmap(){
+    const metric=document.getElementById('heat-metric').value,company=document.getElementById('heat-company').value;
+    const rows=data.hourly.filter(row=>row.company===company);if(!rows.length){showEmpty('heat-chart');return;}
+    const width=Math.max(300,document.getElementById('heat-chart').clientWidth),height=258,left=43,top=29,cellWidth=(width-left-5)/24,cellHeight=28;
+    const valid=rows.map(row=>readNumber(row[metric])).filter(value=>value!==null&&Number.isFinite(value)),low=Math.min(...valid),high=Math.max(...valid);
+    let content='';
+    for(let hour=0;hour<24;hour+=3)content+=`<text text-anchor="middle" x="${left+(hour+.5)*cellWidth}" y="16">${String(hour).padStart(2,'0')}</text>`;
+    for(let day=0;day<7;day++){
+      content+=`<text text-anchor="end" x="${left-8}" y="${top+(day+.5)*cellHeight+4}">${translate('days')[day]}</text>`;
+      for(let hour=0;hour<24;hour++){
+        const row=rows.find(row=>Number(row.weekday)===day&&Number(row.hour)===hour),value=row?readNumber(row[metric]):null;
+        const opacity=value===null?0:.13+.87*(value-low)/Math.max(.000001,high-low);
+        const label=`${company} · ${translate('days')[day]} ${String(hour).padStart(2,'0')}:00\n${translate(metric)}: ${formatValue(value,metric)}`;
+        content+=`<rect ${addHover(`x="${left+hour*cellWidth}" y="${top+day*cellHeight}" width="${cellWidth-2}" height="${cellHeight-2}" rx="1" fill="${colors[company]}" fill-opacity="${opacity}"`,label)}</rect>`;
+      }
+    }
+    document.getElementById('heat-chart').innerHTML=makeSvg(width,height,`${company} · ${translate(metric)} · ${translate('heatEyebrow')}`,content);
+    document.getElementById('heat-min').textContent=formatValue(low,metric);
+    document.getElementById('heat-max').textContent=formatValue(high,metric);
+    document.getElementById('heat-scale').style.background=`linear-gradient(to right,${colors[company]}25,${colors[company]})`;
+  }
+
+  /* The functions below use the documented result schema, without recalculating analysis. */
+  function renderKpis(){
+    const uber=data.keyNumbers.recent12.Uber,lyft=data.keyNumbers.recent12.Lyft;
+    const cards=[
+      {label:translate('trips'),value:formatValue(Number(uber.trips)+Number(lyft.trips),'trips',true),note:translate('pooled')},
+      {label:'Uber · '+translate('take_rate'),value:formatValue(uber.take_rate,'take_rate'),note:formatValue(uber.take_per_trip,'take_per_trip')+' / '+(language==='zh'?'单':'trip'),color:colors.Uber},
+      {label:'Lyft · '+translate('take_rate'),value:formatValue(lyft.take_rate,'take_rate'),note:formatValue(lyft.take_per_trip,'take_per_trip')+' / '+(language==='zh'?'单':'trip'),color:colors.Lyft},
+      {label:'Lyft · '+translate('share'),value:formatValue(lyft.share,'share'),note:translate('shareNote')}
+    ];
+    document.getElementById('kpis').innerHTML=cards.map(card=>`<div class="kpi"><p class="kpi-label">${escapeText(card.label)}</p><p class="kpi-value"${card.color?` style="color:${card.color}"`:''}>${escapeText(card.value)}</p><p class="kpi-note">${escapeText(card.note)}</p></div>`).join('');
+  }
+  function formatChange(value,percentagePoints=false){
+    const number=readNumber(value);if(number===null||!Number.isFinite(number))return '—';
+    return (number>0?'+':'')+formatNumber(number,1)+(percentagePoints?' '+translate('pp'):'%');
+  }
+  function renderCongestion(){
+    const company=document.getElementById('congestion-company').value;
+    const rows=data.congestion.filter(row=>row.company===company&&row.period==='pooled');
+    const metrics=['trips','fare_per_trip','driver_pay_per_trip','take_per_trip','take_rate','speed_mph','duration_minutes','avg_wait_minutes','passenger_total_per_trip','cbd_fee_per_trip'];
+    let html=`<thead><tr><th rowspan="2" scope="col">${translate('metricCol')}</th><th colspan="3" scope="colgroup">${translate('zoneLinked')}</th><th colspan="3" scope="colgroup">${translate('other')}</th><th rowspan="2" scope="col">${translate('gap')}</th></tr><tr><th scope="col">2024</th><th scope="col">2025</th><th scope="col">${translate('yoy')}</th><th scope="col">2024</th><th scope="col">2025</th><th scope="col">${translate('yoy')}</th></tr></thead><tbody>`;
+    metrics.forEach(metric=>{
+      const row=rows.find(row=>row.metric===metric);if(!row)return;
+      html+=`<tr><td>${escapeText(translate(metric))}</td><td>${formatValue(row.zone_2024,metric,metric==='trips')}</td><td>${formatValue(row.zone_2025,metric,metric==='trips')}</td><td>${formatChange(row.zone_change,metric==='take_rate')}</td><td>${formatValue(row.other_2024,metric,metric==='trips')}</td><td>${formatValue(row.other_2025,metric,metric==='trips')}</td><td>${formatChange(row.other_change,metric==='take_rate')}</td><td>${formatChange(row.difference_in_changes,true)}</td></tr>`;
+    });
+    document.getElementById('congestion-table').innerHTML=html+'</tbody>';
+    const months=data.keyNumbers.data.matched_congestion_months;
+    const period=months.length?`${formatMonth(months[0])} – ${formatMonth(months.at(-1))}`:'—';
+    const suffix=language==='zh'?'（与 2024 年相同月份对比）。变化之差 = 区内关联同比 − 其他行程同比；单位为百分点。记录中的总额包含小费和各项费用，可能不等于最终实付。':'(matched to the same months in 2024). Difference in changes = zone-linked growth − other-trip growth, in percentage points. Recorded total includes tips and fees and may differ from final cash charges.';
+    document.getElementById('congestion-period').textContent=translate('period')+': '+period+' '+suffix;
+    document.getElementById('congestion-geography').textContent=describeGeographyWarnings();
+  }
+  function renderCongestionTrend(){
+    const company=document.getElementById('congestion-company').value;
+    const rows=data.congestionTrends.filter(row=>row.company===company&&row.month>='2024-01');
+    if(!rows.length){showEmpty('congestion-chart');return;}
+    const width=Math.max(300,document.getElementById('congestion-chart').clientWidth),height=280,margins={left:width<600?51:64,right:width<600?54:150,top:43,bottom:38};
+    const months=[...new Set(rows.map(row=>String(row.month).slice(0,7)))].sort();
+    const start=readMonthPosition(months[0]),end=readMonthPosition(months.at(-1));
+    const range=calculateRange(rows.map(row=>row.speed_mph));
+    const getX=month=>margins.left+(readMonthPosition(month)-start)/Math.max(1,end-start)*(width-margins.left-margins.right);
+    const getY=value=>height-margins.bottom-(Number(value)-range[0])/(range[1]-range[0])*(height-margins.top-margins.bottom);
+    let content=drawAxes(width,height,margins,range,'speed_mph');
+    content+=`<line x1="${margins.left}" y1="13" x2="${margins.left+17}" y2="13" stroke="${colors[company]}" stroke-width="2"/><text x="${margins.left+23}" y="17">${translate('zoneLinked')}</text><line x1="${margins.left+130}" y1="13" x2="${margins.left+147}" y2="13" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/><text x="${margins.left+153}" y="17">${translate('other')}</text>`;
+    months.filter((month,index)=>index===0||index===months.length-1||index%Math.max(1,Math.ceil(months.length/(width<600?3:7)))===0).forEach(month=>{content+=`<text text-anchor="middle" x="${getX(month)}" y="${height-12}">${escapeText(formatMonth(month))}</text>`;});
+    if(months.includes('2025-01')){
+      const x=getX('2025-01');
+      content+=`<line x1="${x}" y1="${margins.top}" x2="${x}" y2="${height-margins.bottom}" stroke="var(--muted)" stroke-dasharray="3 5"/><text x="${x+8}" y="${margins.top+6}" class="annotation">${language==='zh'?'2025年1月：收费开始':'Jan 2025: fee begins'}</text>`;
+    }
+    ['Zone-linked','Other'].forEach(group=>{
+      const companyRows=rows.filter(row=>row.zone_group===group&&readNumber(row.speed_mph)!==null).sort((a,b)=>a.month.localeCompare(b.month));
+      if(!companyRows.length)return;
+      const groupLabel=translate(group==='Zone-linked'?'zoneLinked':'other'),color=group==='Zone-linked'?colors[company]:'var(--muted)';
+      const path=companyRows.map((row,index)=>`${index?'L':'M'}${getX(row.month).toFixed(2)},${getY(row.speed_mph).toFixed(2)}`).join(' ');
+      content+=`<path d="${path}" fill="none" stroke="${color}" stroke-width="2" ${group==='Other'?'stroke-dasharray="5 4"':''}/>`;
+      companyRows.forEach(row=>{const label=`${company} · ${groupLabel} · ${formatMonth(row.month)}\n${formatValue(row.speed_mph,'speed_mph')}`;content+=`<circle ${addHover(`cx="${getX(row.month)}" cy="${getY(row.speed_mph)}" r="5" fill="${color}" fill-opacity="0.01"`,label)}</circle>`;});
+      const last=companyRows.at(-1);
+      content+=`<text class="endpoint" x="${getX(last.month)+9}" y="${getY(last.speed_mph)+4}" style="fill:${color}">${width<600?'':escapeText(groupLabel)+' '}${formatValue(last.speed_mph,'speed_mph',true)}</text>`;
+    });
+    document.getElementById('congestion-chart').innerHTML=makeSvg(width,height,`${company} · ${translate('speed_mph')} · ${translate('zoneLinked')} / ${translate('other')}`,content);
+  }
+  function renderZones(){
+    const query=document.getElementById('zone-search').value.trim().toLowerCase(),company=document.getElementById('zone-company').value;
+    const columns=[['zone','zone'],['borough','borough'],['company','company'],['trips','trips'],['take_rate','take_rate'],['take_per_trip','take_per_trip'],['fare_per_trip','fare_per_trip'],['driver_pay_per_trip','driver_pay_per_trip'],['avg_wait_minutes','avg_wait_minutes']];
+    const rows=data.zones.filter(row=>(company==='all'||row.company===company)&&[row.zone,row.borough,row.company,row.location_id].join(' ').toLowerCase().includes(query));
+    rows.sort((a,b)=>{
+      if(['zone','borough','company'].includes(sortColumn))return sortDirection*String(a[sortColumn]).localeCompare(String(b[sortColumn]));
+      const first=readNumber(a[sortColumn]),second=readNumber(b[sortColumn]);
+      if(first===null)return 1;if(second===null)return -1;return sortDirection*(first-second);
+    });
+    let html='<thead><tr>'+columns.map(([column,label])=>`<th scope="col"${sortColumn===column?` aria-sort="${sortDirection===1?'ascending':'descending'}"`:''}><button type="button" data-sort="${column}">${escapeText(translate(label))}${sortColumn===column?(sortDirection===1?' ↑':' ↓'):''}</button></th>`).join('')+'</tr></thead><tbody>';
+    rows.forEach(row=>{html+='<tr>'+columns.map(([column])=>{
+      if(column==='company')return `<td style="color:${colors[row.company]}">${escapeText(row.company)}</td>`;
+      if(['zone','borough'].includes(column))return `<td${column==='zone'?` title="${escapeText(row.location_id+' · '+row.zone)}"`:''}>${escapeText(row[column])}</td>`;
+      return `<td>${formatValue(row[column],column)}</td>`;
+    }).join('')+'</tr>';});
+    if(!rows.length)html+=`<tr><td colspan="${columns.length}">${escapeText(translate('noData'))}</td></tr>`;
+    document.getElementById('zone-table').innerHTML=html+'</tbody>';
+    document.getElementById('zone-count').textContent=`${translate('countNote')}: ${rows.length} / ${data.zones.length}`;
+    document.querySelectorAll('[data-sort]').forEach(button=>button.addEventListener('click',()=>{const column=button.dataset.sort;sortDirection=sortColumn===column?-sortDirection:(['zone','borough','company'].includes(column)?1:-1);sortColumn=column;renderZones();}));
+  }
+  function renderMetadata(){
+    const coverage=data.keyNumbers.data;
+    document.getElementById('snapshot-period').textContent=`${formatMonth(coverage.recent_start)} – ${formatMonth(coverage.recent_end)}`;
+    const sampled=String(coverage.sampling).toLowerCase().includes('quarter');
+    document.getElementById('coverage-line').textContent=`${translate('latest')}: ${coverage.latest_month} · ${translate(sampled?'sample':'full')}`;
+    const coverageText=language==='zh'?`仅使用 NYC TLC 高运量网约车行程记录和官方区域对照表。区间 ${coverage.first_month} 至 ${coverage.latest_month}，共 ${coverage.coverage_months} 个有数据月份。最近窗口包含 ${coverage.recent_months} 个月。${sampled?'2019–2022 年采用季度抽样（保留 2019 年 2 月及 2022 年 4 月）；2023 年起逐月。抽样月份不能视为全年总量。':'全区间逐月覆盖。'} Uber 对应 HV0003，Lyft 对应 HV0005。`:`Only NYC TLC High Volume FHV records and the official zone lookup are used. Coverage: ${coverage.first_month} to ${coverage.latest_month}, ${coverage.coverage_months} observed months. The recent window contains ${coverage.recent_months} months. ${sampled?'2019–2022 use a quarterly sample, retaining February 2019 and April 2022; every month from 2023. Sampled months are not annual totals.':'Every month is included throughout the period.'} Uber is HV0003; Lyft is HV0005.`;
+    document.getElementById('method-source').textContent=coverageText;
+    const inferredCount=coverage.inferred_zone_count;
+    const definition=language==='zh'?`区域识别：汇总 2025 年 2 月的合格 Uber/Lyft 行程，将 CBD 费用为正的订单占比严格高于 95% 的上车区域纳入，共 ${inferredCount} 个区域。固定该集合后，用任一端点是否在内分组。此方法会漏掉仅穿过拥堵区的行程，也使用了收费后的数据，因此不能作为独立的政策前处理组。机场单指任一端点为 1、132 或 138 区域，包含纽约市外的 Newark。`:`Zone inference: pool clean Uber/Lyft trips in February 2025; include pickup zones where strictly more than 95% have a positive CBD fee (${inferredCount} zones). Hold that set fixed and classify trips by either endpoint. This misses pass-through trips and uses post-policy information, so it is not an independent pre-policy treatment assignment. Airport trips have either endpoint in zone 1, 132, or 138, including Newark outside NYC.`;
+    document.getElementById('inference-note').textContent=definition+' '+describeGeographyWarnings();
+  }
+  function describeGeographyWarnings(){
+    const warnings=data.keyNumbers.data.inferred_zone_warnings || [];
+    const samples=warnings.map(row=>language==='zh'?`${row.zone}（区域 ${row.location_id}，训练样本 ${formatValue(row.training_trips,'trips')} 单，收费占比 ${formatValue(row.charged_share,'share')}）`:`${row.zone} (zone ${row.location_id}, training n=${formatValue(row.training_trips,'trips')}, ${formatValue(row.charged_share,'share')} fee-positive)`).join(language==='zh'?'；':'; ');
+    if(!samples)return language==='zh'?'收费占比识别的是数据代理区域，不是法定边界，可能纳入误判区域。区内外对比对区域口径敏感。':'The fee-share rule creates a data proxy, not the legal CBD boundary, and can admit false-positive zones. Group comparisons are sensitive to this geography.';
+    return language==='zh'?`指定的 >95% 规则也纳入了训练样本极少的区域：${samples}。这些可能是误判区域；该代理区域并非法定 CBD 边界，因此区内外对比对区域口径敏感。`:`The specified >95% rule also admits very small training samples: ${samples}. These are possible false-positive zones; this proxy is not the legal CBD boundary. Group comparisons are sensitive to this geography.`;
+  }
+
+  words.en.passenger_total_per_trip='Recorded total / trip';words.zh.passenger_total_per_trip='每单记录总额';
+  words.en.cbd_fee_per_trip='CBD fee / trip';words.zh.cbd_fee_per_trip='每单 CBD 费用';
+  words.en.methodologyLink='Detailed methodology ↗';words.zh.methodologyLink='详细方法说明 ↗';
+  words.en.geographyTitle='The inferred geography has edge cases';words.zh.geographyTitle='识别区域存在边界误判';
+  metricTypes.passenger_total_per_trip='money';metricTypes.cbd_fee_per_trip='money';
+
+  function renderPage(){
+    document.documentElement.lang=language==='zh'?'zh-CN':'en';
+    document.querySelectorAll('[data-i18n]').forEach(element=>{element.textContent=translate(element.dataset.i18n);});
+    document.getElementById('language').textContent=language==='en'?'中文':'EN';
+    document.getElementById('language').setAttribute('aria-label',language==='en'?'Switch to Chinese':'切换为英文');
+    document.getElementById('zone-search').placeholder=language==='en'?'e.g. Midtown, Queens, Lyft':'例如 Midtown、Queens、Lyft';
+    document.getElementById('kpis').setAttribute('aria-label',language==='en'?'Recent 12 month key figures':'最近 12 个月关键数字');
+    document.querySelector('.navline').setAttribute('aria-label',language==='en'?'Analysis sections':'分析章节');
+    setOptions('trend-metric',['take_rate','take_per_trip','trips','share','fare_per_trip','driver_pay_per_trip','avg_wait_minutes','speed_mph','duration_minutes']);
+    setOptions('distance-metric',['take_rate','take_per_trip','fare_per_mile','negative_take_share']);
+    setOptions('heat-metric',['take_rate','avg_wait_minutes','trips','fare_per_mile','speed_mph']);
+    renderKpis();renderMetadata();renderTrend();renderDistance();renderHeatmap();renderCongestion();renderCongestionTrend();renderZones();updateThemeLabel();
+  }
+  function readDarkMode(){return document.documentElement.dataset.theme==='dark'||(!document.documentElement.dataset.theme&&matchMedia('(prefers-color-scheme:dark)').matches);}
+  function updateThemeLabel(){document.getElementById('theme').textContent=translate(readDarkMode()?'lightTheme':'theme');document.getElementById('theme').setAttribute('aria-pressed',String(readDarkMode()));}
+  function showTooltip(event){
+    const point=event.target.closest('[data-tooltip]');if(!point)return;
+    const tooltip=document.getElementById('tooltip');tooltip.textContent=point.dataset.tooltip;tooltip.classList.add('visible');
+    const box=point.getBoundingClientRect(),x=event.clientX||box.left+box.width/2,y=event.clientY||box.top;
+    tooltip.style.left=Math.min(Math.max(8,x+12),innerWidth-tooltip.offsetWidth-8)+'px';
+    tooltip.style.top=Math.max(8,Math.min(y+13,innerHeight-tooltip.offsetHeight-8))+'px';
+  }
+  function hideTooltip(){document.getElementById('tooltip').classList.remove('visible');}
+  document.getElementById('language').addEventListener('click',()=>{language=language==='en'?'zh':'en';try{localStorage.setItem('rideshare-language',language);}catch(error){/* Local files may block storage. */}renderPage();});
+  document.getElementById('theme').addEventListener('click',()=>{document.documentElement.dataset.theme=readDarkMode()?'light':'dark';try{localStorage.setItem('rideshare-theme',document.documentElement.dataset.theme);}catch(error){/* Local files may block storage. */}updateThemeLabel();});
+  document.getElementById('trend-metric').addEventListener('change',renderTrend);
+  document.getElementById('distance-metric').addEventListener('change',renderDistance);
+  ['heat-company','heat-metric'].forEach(id=>document.getElementById(id).addEventListener('change',renderHeatmap));
+  document.getElementById('congestion-company').addEventListener('change',()=>{renderCongestion();renderCongestionTrend();});
+  document.getElementById('zone-search').addEventListener('input',renderZones);
+  document.getElementById('zone-company').addEventListener('change',renderZones);
+  document.addEventListener('pointerover',showTooltip);document.addEventListener('pointermove',showTooltip);document.addEventListener('focusin',showTooltip);
+  document.addEventListener('pointerout',hideTooltip);document.addEventListener('focusout',hideTooltip);document.addEventListener('scroll',hideTooltip,true);
+  document.addEventListener('keydown',event=>{if(event.key==='Escape')hideTooltip();});
+  let resizeTimer;
+  window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{renderTrend();renderDistance();renderHeatmap();renderCongestionTrend();},120);});
+  try{language=localStorage.getItem('rideshare-language')==='zh'?'zh':'en';const theme=localStorage.getItem('rideshare-theme');if(['dark','light'].includes(theme))document.documentElement.dataset.theme=theme;}catch(error){/* The page also works with browser storage disabled. */}
+  renderPage();
+  </script>
+</body>
+</html>
