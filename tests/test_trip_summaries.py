@@ -177,23 +177,37 @@ def test_hourly_dimensions_are_monday_zero_and_pickup_hour(load_month):
 
 
 def test_zone_inference_requires_strictly_more_than_95_percent(load_month):
-    # Nineteen of twenty is exactly 95%; pooling both companies is intentional.
+    # Exactly 950 of 1,000 is 95%; pooling both companies is intentional.
     rows = []
-    for location, charged_count in [(10, 19), (20, 20), (30, 18)]:
-        for index in range(20):
+    for location, charged_count in [(4, 950), (12, 951), (13, 949)]:
+        for index in range(1000):
             rows.append(make_trip(PULocationID=location,
                                   hvfhs_license_num='HV0003' if index % 2 else 'HV0005',
                                   cbd_congestion_fee=1.5 if index < charged_count else 0))
-    rows.append(make_trip(PULocationID=20, base_passenger_fare=0, cbd_congestion_fee=0))
+    rows.append(make_trip(PULocationID=12, base_passenger_fare=0, cbd_congestion_fee=0))
     connection, _ = load_month(rows)
     zones = connection.execute(read_sql('infer_cbd_zones')).df().set_index('location_id')
-    assert zones.loc[10, 'charged_share'] == pytest.approx(0.95)
-    assert not zones.loc[10, 'in_zone']
-    assert zones.loc[20, 'in_zone']
-    assert zones.loc[20, 'trips'] == 20
-    assert not zones.loc[30, 'in_zone']
+    assert zones.loc[4, 'charged_share'] == pytest.approx(0.95)
+    assert not zones.loc[4, 'in_zone']
+    assert zones.loc[12, 'in_zone']
+    assert zones.loc[12, 'trips'] == 1000
+    assert not zones.loc[13, 'in_zone']
 
 
 def test_missing_economic_fields_fail_instead_of_creating_fabricated_fares(load_month):
     with pytest.raises(ValueError, match='Missing core fields.*driver_pay'):
         load_month([make_trip()], drop_columns=['driver_pay'])
+
+
+def test_zone_inference_excludes_non_manhattan_and_small_samples(load_month):
+    # High fee shares alone cannot admit Newark, Queens, or a tiny island sample.
+    rows = []
+    for location, count in [(4, 1000), (12, 999), (1, 1000), (10, 1000), (105, 2)]:
+        rows.extend(make_trip(PULocationID=location, cbd_congestion_fee=1.5)
+                    for _ in range(count))
+    connection, _ = load_month(rows)
+    zones = connection.execute(read_sql('infer_cbd_zones')).df()
+    inferred = zones.loc[zones.in_zone]
+    assert inferred.location_id.tolist() == [4]
+    assert inferred.borough.eq('Manhattan').all()
+    assert inferred.trips.ge(1000).all()

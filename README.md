@@ -7,7 +7,8 @@ How much of each NYC Uber/Lyft base fare remains after driver pay, and how did f
 ## Key findings
 
 - In 2026-08, Uber's gross take rate was 21.8% ($5.98/trip), versus Lyft's 24.1% ($6.16/trip).
-- From 2019-02 to 2026-08, Uber's mean base fare per trip changed +73.5%, while mean driver pay changed +38.2%; its take rate moved +20.0 percentage points.
+- From 2019-02 to 2026-08, Uber's mean base fare per trip grew +73.5% and mean driver pay +38.2%; Lyft's fare grew +49.5% and driver pay +65.9%.
+- Gross take rates have moved closer: in 2019-02 Lyft was 31.6% and Uber 1.9% (Uber was -4.6% in 2019-03). Since 2024, both companies' monthly rates have been roughly 19%–28%; in 2026-08, Uber was 21.8% and Lyft 24.1%. Uber's early take was unusually low, so growth comparisons using 2019-02 are sensitive to that starting point.
 - Over the latest 12 months, Lyft handled 27.8% of Uber/Lyft trips; its mean gross take was $5.92/trip versus Uber's $6.43.
 - For Uber trips up to 2 miles in the latest 12 months, gross take rate was 30.4%; driver pay exceeded base fare on 10.0% of trips.
 - In matched Feb-Dec 2025 versus 2024 months, Uber's zone-linked speed changed +2.8%, versus -0.9% elsewhere: a +3.7 percentage-point descriptive gap.
@@ -36,8 +37,7 @@ The standalone [HTML file](docs/index.html) also opens locally. It includes metr
 - Keep fare > 0, driver pay ≥ 0, 0 < miles ≤ 100, duration 1–240 minutes, and pickup month matching the file. Valid waits are 0–60 minutes; invalid waits are excluded from the wait denominator only. Missing historical optional fee fields are zero. Record raw and retained counts by company and month.
 - **Gross take = base passenger fare − driver pay. Take rate = sum(take) / sum(base fare).** Neither includes tips, tolls, taxes or surcharges. A group rate is a ratio of totals, not a mean of trip rates. Fare and pay growth compare mean dollars/trip in 2019-02 with 2026-08; dollars are nominal.
 - Distance, weekday-hour, airport, borough and pickup-zone comparisons pool the latest 12 calendar months. Airport-linked means either endpoint is zone 1, 132 or 138, including Newark. Speed = total miles / total occupied trip hours; pay/trip is not hourly driver earnings. Market share covers Uber and Lyft only.
-- Congestion-zone membership is inferred from clean pooled Uber/Lyft pickup records in February 2025: more than 95% with a positive `cbd_congestion_fee`. A trip is zone-linked if either endpoint is in that fixed inferred set. Compare available matched February–December 2025 months with the same 2024 months, skipping January. Report growth within each group and the difference between growth rates; this is **descriptive, not a causal estimate**. Pooled per-trip metrics are computed after summing all matched trips.
-- **Inferred-zone warning:** zone 1 (Newark Airport): 1 training pickup(s); zone 105 (Governor's Island/Ellis Island/Liberty Island): 2 training pickup(s). Both meet the requested threshold with very small denominators. In particular, Newark is outside the legal CBD, but its endpoint trips enter the zone-linked group under this rule. Treat the groups as a data-inferred proxy; these false positives can materially affect the comparison. No extra volume cutoff is imposed.
+- Congestion-zone membership is inferred from clean pooled Uber/Lyft pickup records in February 2025: Manhattan zones with at least 1,000 trips and more than 95% with a positive `cbd_congestion_fee`. This identifies 38 zones. A trip is zone-linked if either endpoint is in that fixed set; trips that only pass through the zone are missed. Compare available matched February–December 2025 months with the same 2024 months, skipping January. Report growth within each group and the difference between growth rates; this is **descriptive, not a causal estimate**. Pooled per-trip metrics are computed after summing all matched trips.
 - Policy context: the MTA passenger charge is $1.50 per qualifying trip from January 5, 2025; the March 3, 2026 court decision vacated the challenged federal termination attempts. TLC's March 1, 2026 in-city non-WAV driver-pay rates are $1.283/mile plus $0.681/minute, including utilization; these are not retroactively applied to past trips. See the primary sources in [source notes](docs/sources.md) and the structured receipt in `data/results/source_context.json`.
 - Pooled Uber + Lyft UCLA cross-check: 2019-02: project 10.0%, UCLA 9.0%; 2022-04: project 21.1%, UCLA 20.7%. UCLA also uses a ratio of totals for take rate. Its filters differ: non-WAV, NYC endpoints, no shared 2019 trips, fare/pay above $0.01, duration up to five hours. Its separate 50% fare / 31% pay growth statement uses medians; this project uses means. [Original UCLA report](https://www.labor.ucla.edu/wp-content/uploads/2023/02/Taxi-Commission-policy-brief-2.9.23.pdf). Raw-file check for 2025-12: 22,108,438 rows versus TLC's 22,108,438; difference +0 (+0.00%).
 
@@ -82,7 +82,8 @@ tests/           # Hand-written SQL and metric checks
 ### 关键发现
 
 - 2026-08，Uber 毛额抽成率为 21.8%（每单 $5.98），Lyft 为 24.1%（每单 $6.16）。
-- 从 2019-02 到 2026-08，Uber 平均每单基础车费变动 +73.5%，司机收入变动 +38.2%；抽成率变动 +20.0 个百分点。
+- 从 2019-02 到 2026-08，Uber 平均每单基础车费增长 +73.5%、司机收入增长 +38.2%；Lyft 车费增长 +49.5%、司机收入增长 +65.9%。
+- 两家毛额抽成率在靠拢：2019-02 Lyft 为 31.6%，Uber 为 1.9%（2019-03 Uber 为 -4.6%）；2024 年以来两家月度抽成率都在约 19%–28%，2026-08 Uber 为 21.8%、Lyft 为 24.1%。Uber 在 2019 年初的抽成很低，以 2019-02 为基准的增长对比会受这个起点影响。
 - 最近 12 个月，Lyft 占 Uber/Lyft 合计订单的 27.8%；平均每单毛额抽成为 $5.92，Uber 为 $6.43。
 - 最近 12 个月，Uber 不超过 2 英里的订单毛额抽成率为 30.4%；10.0% 的订单司机收入高于基础车费。
 - 2025 年与 2024 年匹配的 2—12 月相比，Uber 区内关联订单速度变动 +2.8%，其他订单变动 -0.9%，描述性差距为 +3.7 个百分点。
@@ -99,9 +100,7 @@ tests/           # Hand-written SQL and metric checks
 
 毛额抽成＝基础车费－司机收入；抽成率＝合计抽成÷合计基础车费，不含小费、过路费、税费和附加费。先汇总再算比例；车费和司机收入增长比较名义平均每单金额。速度用总里程÷总行程小时，司机每单收入不是小时工资。机场单任一端为区域 1、132、138，包含 Newark。
 
-用 2025 年 2 月超过 95% 订单被收 CBD 费用的上车区域识别收费区，任一端在该集合内即为区内关联订单。跳过 2025 年 1 月，把 2025 年 2—12 月的可用月份与 2024 年同月比较；分别计算区内外变化，再比较增速差。它只是差中差思路的描述性对照，不能写成政策因果效果。UCLA 的 9% 与 20.7% 及本项目对应核对值均为两平台合计的总额比例，但清洗、无障碍车、纽约两端和拼车范围不同；其 50%/31% 增长使用中位数，本项目使用均值。原始行数核对及政策原文见[来源说明](docs/sources.md)。
-
-**区域推断警示：**区域 1（Newark Airport）：训练月仅 1 单上车；区域 105（Governor's Island/Ellis Island/Liberty Island）：训练月仅 2 单上车。它们在极小分母下通过阈值，尤其 Newark 不在法定 CBD 内，却会因端点规则被计入区内关联组。这里保留指定规则，不另加最低单量门槛；应把区域视作数据推断代理，其误分类可能显著影响区内外结果。
+用 2025 年 2 月上车单数不少于 1,000、且超过 95% 订单被收 CBD 费用的曼哈顿区域识别收费区，共 38 个区域；任一端在该集合内即为区内关联订单，所以只穿过拥堵区的订单会被漏掉。跳过 2025 年 1 月，把 2025 年 2—12 月的可用月份与 2024 年同月比较；分别计算区内外变化，再比较增速差。它只是差中差思路的描述性对照，不能写成政策因果效果。UCLA 的 9% 与 20.7% 及本项目对应核对值均为两平台合计的总额比例，但清洗、无障碍车、纽约两端和拼车范围不同；其 50%/31% 增长使用中位数，本项目使用均值。原始行数核对及政策原文见[来源说明](docs/sources.md)。
 
 政策背景：拥堵区自 2025-01-05 对符合条件的网约车每单向乘客收取 $1.50；2026-03-03 法院撤销了受到挑战的联邦终止决定。2026-03-01 起，纽约市内非无障碍车辆的最低司机支付标准为每英里 $1.283 加每分钟 $0.681，已含利用率调整；本项目不把这一标准追溯应用到历史订单。
 

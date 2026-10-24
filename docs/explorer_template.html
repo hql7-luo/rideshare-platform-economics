@@ -40,7 +40,7 @@
     </div>
     <section id="congestion" class="section" aria-labelledby="congestion-heading"><div class="section-head"><div><p class="section-number">04 / <span data-i18n="congestionEyebrow">THE CONGESTION ZONE</span></p><h2 id="congestion-heading" data-i18n="congestionTitle">Separate the fee from the economics.</h2><p class="section-desc" data-i18n="congestionDesc">Compare the same calendar months in 2024 and 2025, excluding January. “Zone-linked” means either endpoint is in the data-inferred zone.</p></div><div class="control-group"><label class="control"><span data-i18n="company">Company</span><select id="congestion-company"><option>Uber</option><option>Lyft</option></select></label></div></div>
       <div class="policy"><div class="note"><p><strong data-i18n="policyTitle">A rider charge, under the rule</strong></p><p data-i18n="policyBody">From January 5, 2025, the CBD toll adds $1.50 per Uber/Lyft passenger trip in, out of, within, or through the zone. This charge is separate from base fare and the older congestion surcharge.</p></div><div class="note"><p><strong data-i18n="cautionTitle">A descriptive comparison</strong></p><p data-i18n="cautionBody">Changes in fare, driver pay, gross take, and demand do not identify who ultimately bears the economic cost. Pricing changes, minimum-pay rules, seasonality, and changing trip mix also matter.</p></div></div>
-      <div class="note" style="margin-bottom:20px"><p><strong data-i18n="geographyTitle">The inferred geography has edge cases</strong></p><p id="congestion-geography"></p></div>
+      <div class="note" style="margin-bottom:20px"><p><strong data-i18n="geographyTitle">How the zone is inferred</strong></p><p id="congestion-geography"></p></div>
       <div class="table-wrap"><table id="congestion-table"></table></div><p class="small" id="congestion-period"></p>
       <div class="plot" style="margin-top:19px"><div id="congestion-chart"></div><p class="plot-caption" data-i18n="congestionChartCaption">Monthly average speed, calculated as total miles ÷ total trip hours. Zone-linked and other trips can differ in their routes and mix.</p></div>
     </section>
@@ -91,22 +91,50 @@
   function addHover(content,label){return `tabindex="0" data-tooltip="${escapeText(label)}" aria-label="${escapeText(label)}" ${content}><title>${escapeText(label)}</title>`;}
 
   /* Use the same scale across companies within each chart. */
-  function calculateRange(values,includeZero=false){
+  function calculatePercentStep(span){
+    const target=Math.max(1,span/4),magnitude=10**Math.floor(Math.log10(target)),fraction=target/magnitude;
+    return Math.max(1,(fraction<=1.5?1:fraction<=3?2:fraction<=7.5?5:10)*magnitude);
+  }
+  function calculateRange(values,includeZero=false,metric=''){
     const valid=values.map(readNumber).filter(value=>value!==null && Number.isFinite(value));
     let low=valid.length?Math.min(...valid):0,high=valid.length?Math.max(...valid):1;
     if(includeZero){low=Math.min(0,low);high=Math.max(0,high);}
     if(low===high){low-=Math.abs(low)*.1||.1;high+=Math.abs(high)*.1||.1;}
     const pad=(high-low)*.1;
-    return [includeZero&&low===0?0:low-pad,high+pad];
+    low=includeZero&&low===0?0:low-pad;high+=pad;
+    if(metricTypes[metric]==='percent'){
+      const step=calculatePercentStep((high-low)*100)/100;
+      return [Math.floor(low/step)*step,Math.ceil(high/step)*step];
+    }
+    return [low,high];
   }
   function drawAxes(width,height,margins,range,metric){
     let content='';const bottom=height-margins.bottom,top=margins.top,right=width-margins.right;
-    for(let index=0;index<=4;index++){
-      const value=range[0]+(range[1]-range[0])*index/4;
-      const y=bottom-(bottom-top)*index/4;
-      content+=`<line class="grid" x1="${margins.left}" y1="${y}" x2="${right}" y2="${y}"/><text text-anchor="end" x="${margins.left-10}" y="${y+4}">${escapeText(formatValue(value,metric,true))}</text>`;
+    const isPercent=metricTypes[metric]==='percent',step=isPercent?calculatePercentStep((range[1]-range[0])*100)/100:(range[1]-range[0])/4;
+    for(let value=range[0];value<=range[1]+step*.001;value+=step){
+      const y=bottom-(value-range[0])/(range[1]-range[0])*(bottom-top);
+      const label=isPercent?formatNumber(Math.round(value*100),0)+'%':formatValue(value,metric,true);
+      content+=`<line class="grid" x1="${margins.left}" y1="${y}" x2="${right}" y2="${y}"/><text text-anchor="end" x="${margins.left-10}" y="${y+4}">${escapeText(label)}</text>`;
     }
     return content;
+  }
+
+  /* Keep endpoint labels in numeric order, with enough room for their text. */
+  function positionEndpointLabels(points,top,bottom,minGap=22){
+    const labels=points.map(point=>({...point,labelY:Math.max(top,Math.min(bottom,point.y))})).sort((a,b)=>b.value-a.value);
+    labels.forEach((label,index)=>{if(index)label.labelY=Math.max(label.labelY,labels[index-1].labelY+minGap);});
+    const overflow=labels.length?Math.max(0,labels.at(-1).labelY-bottom):0;
+    labels.forEach(label=>{label.labelY-=overflow;});
+    return labels;
+  }
+
+  /* Select month labels by screen distance so the final two months cannot collide. */
+  function selectMonthTicks(months,getX,minGap=82){
+    if(months.length<2)return months;
+    const ticks=[months[0]],last=months.at(-1);
+    months.slice(1,-1).forEach(month=>{if(getX(month)-getX(ticks.at(-1))>=minGap&&getX(last)-getX(month)>=minGap)ticks.push(month);});
+    ticks.push(last);
+    return ticks;
   }
   function renderTrend(){
     const metric=document.getElementById('trend-metric').value;
@@ -115,12 +143,11 @@
     const width=Math.max(300,document.getElementById('trend-chart').clientWidth),height=width<600?285:330,margins={left:width<600?53:68,right:width<600?66:90,top:25,bottom:40};
     const months=[...new Set(rows.map(row=>String(row.month).slice(0,7)))].sort();
     const start=readMonthPosition(months[0]),end=readMonthPosition(months.at(-1));
-    const range=calculateRange(rows.map(row=>row[metric]),metric==='trips'||metric==='share');
+    const range=calculateRange(rows.map(row=>row[metric]),metric==='trips'||metric==='share',metric);
     const getX=month=>margins.left+(readMonthPosition(month)-start)/Math.max(1,end-start)*(width-margins.left-margins.right);
     const getY=value=>height-margins.bottom-(Number(value)-range[0])/(range[1]-range[0])*(height-margins.top-margins.bottom);
     let content=drawAxes(width,height,margins,range,metric);
-    const tickCount=width<600?3:7;
-    const tickMonths=months.filter((month,index)=>index===0||index===months.length-1||index%Math.max(1,Math.ceil(months.length/tickCount))===0);
+    const tickMonths=selectMonthTicks(months,getX,language==='zh'?96:82),endpoints=[];
     tickMonths.forEach(month=>{content+=`<text text-anchor="middle" x="${getX(month)}" y="${height-12}">${escapeText(formatMonth(month))}</text>`;});
     ['Uber','Lyft'].forEach(company=>{
       const companyRows=rows.filter(row=>row.company===company).sort((a,b)=>a.month.localeCompare(b.month));
@@ -131,10 +158,13 @@
         const label=`${company} · ${formatMonth(row.month)}\n${translate(metric)}: ${formatValue(row[metric],metric)}`;
         content+=`<circle ${addHover(`cx="${getX(row.month)}" cy="${getY(row[metric])}" r="5" fill="${colors[company]}" fill-opacity="0.01" stroke="transparent"`,label)}</circle>`;
       });
-      const last=companyRows.at(-1);let labelY=getY(last[metric]);
-      const other=rows.find(row=>row.month===last.month&&row.company!==company);
-      if(other&&Math.abs(getY(other[metric])-labelY)<21)labelY+=company==='Uber'?-10:12;
-      content+=`<circle cx="${getX(last.month)}" cy="${getY(last[metric])}" r="3" fill="${colors[company]}"/><text class="endpoint" x="${getX(last.month)+10}" y="${labelY+4}" style="fill:${colors[company]}">${escapeText(formatValue(last[metric],metric,true))}</text>`;
+      const last=companyRows.at(-1);
+      endpoints.push({value:Number(last[metric]),x:getX(last.month),y:getY(last[metric]),color:colors[company]});
+    });
+    positionEndpointLabels(endpoints,margins.top,height-margins.bottom).forEach(point=>{
+      content+=`<circle cx="${point.x}" cy="${point.y}" r="3" fill="${point.color}"/>`;
+      if(Math.abs(point.labelY-point.y)>1)content+=`<line x1="${point.x+4}" y1="${point.y}" x2="${point.x+8}" y2="${point.labelY}" stroke="${point.color}"/>`;
+      content+=`<text class="endpoint" x="${point.x+10}" y="${point.labelY+4}" style="fill:${point.color}">${escapeText(formatValue(point.value,metric,true))}</text>`;
     });
     document.getElementById('trend-chart').innerHTML=makeSvg(width,height,`${translate(metric)} · Uber / Lyft`,content);
     const unit=metricTypes[metric]==='minutes'?translate('minutes'):metricTypes[metric]==='speed'?translate('mph'):'';
@@ -145,7 +175,7 @@
     const metric=document.getElementById('distance-metric').value,bins=['0-1','1-2','2-3','3-5','5-10','10-20','20+'];
     const rows=data.distance;if(!rows.length){showEmpty('distance-chart');return;}
     const width=Math.max(300,document.getElementById('distance-chart').clientWidth),height=300,margins={left:width<450?52:63,right:10,top:20,bottom:41};
-    const range=calculateRange(rows.map(row=>row[metric]),true),plotWidth=width-margins.left-margins.right;
+    const range=calculateRange(rows.map(row=>row[metric]),true,metric),plotWidth=width-margins.left-margins.right;
     const getY=value=>height-margins.bottom-(Number(value)-range[0])/(range[1]-range[0])*(height-margins.top-margins.bottom);
     const zero=getY(0),step=plotWidth/bins.length,barWidth=step*.31;
     let content=drawAxes(width,height,margins,range,metric);
@@ -212,7 +242,7 @@
     const period=months.length?`${formatMonth(months[0])} – ${formatMonth(months.at(-1))}`:'—';
     const suffix=language==='zh'?'（与 2024 年相同月份对比）。变化之差 = 区内关联同比 − 其他行程同比；单位为百分点。记录中的总额包含小费和各项费用，可能不等于最终实付。':'(matched to the same months in 2024). Difference in changes = zone-linked growth − other-trip growth, in percentage points. Recorded total includes tips and fees and may differ from final cash charges.';
     document.getElementById('congestion-period').textContent=translate('period')+': '+period+' '+suffix;
-    document.getElementById('congestion-geography').textContent=describeGeographyWarnings();
+    document.getElementById('congestion-geography').textContent=describeZoneInference();
   }
   function renderCongestionTrend(){
     const company=document.getElementById('congestion-company').value;
@@ -226,11 +256,12 @@
     const getY=value=>height-margins.bottom-(Number(value)-range[0])/(range[1]-range[0])*(height-margins.top-margins.bottom);
     let content=drawAxes(width,height,margins,range,'speed_mph');
     content+=`<line x1="${margins.left}" y1="13" x2="${margins.left+17}" y2="13" stroke="${colors[company]}" stroke-width="2"/><text x="${margins.left+23}" y="17">${translate('zoneLinked')}</text><line x1="${margins.left+130}" y1="13" x2="${margins.left+147}" y2="13" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/><text x="${margins.left+153}" y="17">${translate('other')}</text>`;
-    months.filter((month,index)=>index===0||index===months.length-1||index%Math.max(1,Math.ceil(months.length/(width<600?3:7)))===0).forEach(month=>{content+=`<text text-anchor="middle" x="${getX(month)}" y="${height-12}">${escapeText(formatMonth(month))}</text>`;});
+    selectMonthTicks(months,getX,language==='zh'?96:82).forEach(month=>{content+=`<text text-anchor="middle" x="${getX(month)}" y="${height-12}">${escapeText(formatMonth(month))}</text>`;});
     if(months.includes('2025-01')){
       const x=getX('2025-01');
       content+=`<line x1="${x}" y1="${margins.top}" x2="${x}" y2="${height-margins.bottom}" stroke="var(--muted)" stroke-dasharray="3 5"/><text x="${x+8}" y="${margins.top+6}" class="annotation">${language==='zh'?'2025年1月：收费开始':'Jan 2025: fee begins'}</text>`;
     }
+    const endpoints=[];
     ['Zone-linked','Other'].forEach(group=>{
       const companyRows=rows.filter(row=>row.zone_group===group&&readNumber(row.speed_mph)!==null).sort((a,b)=>a.month.localeCompare(b.month));
       if(!companyRows.length)return;
@@ -239,7 +270,11 @@
       content+=`<path d="${path}" fill="none" stroke="${color}" stroke-width="2" ${group==='Other'?'stroke-dasharray="5 4"':''}/>`;
       companyRows.forEach(row=>{const label=`${company} · ${groupLabel} · ${formatMonth(row.month)}\n${formatValue(row.speed_mph,'speed_mph')}`;content+=`<circle ${addHover(`cx="${getX(row.month)}" cy="${getY(row.speed_mph)}" r="5" fill="${color}" fill-opacity="0.01"`,label)}</circle>`;});
       const last=companyRows.at(-1);
-      content+=`<text class="endpoint" x="${getX(last.month)+9}" y="${getY(last.speed_mph)+4}" style="fill:${color}">${width<600?'':escapeText(groupLabel)+' '}${formatValue(last.speed_mph,'speed_mph',true)}</text>`;
+      endpoints.push({value:Number(last.speed_mph),x:getX(last.month),y:getY(last.speed_mph),color,label:groupLabel});
+    });
+    positionEndpointLabels(endpoints,margins.top,height-margins.bottom).forEach(point=>{
+      if(Math.abs(point.labelY-point.y)>1)content+=`<line x1="${point.x+3}" y1="${point.y}" x2="${point.x+7}" y2="${point.labelY}" stroke="${point.color}"/>`;
+      content+=`<text class="endpoint" x="${point.x+9}" y="${point.labelY+4}" style="fill:${point.color}">${width<600?'':escapeText(point.label)+' '}${formatValue(point.value,'speed_mph',true)}</text>`;
     });
     document.getElementById('congestion-chart').innerHTML=makeSvg(width,height,`${company} · ${translate('speed_mph')} · ${translate('zoneLinked')} / ${translate('other')}`,content);
   }
@@ -270,21 +305,18 @@
     document.getElementById('coverage-line').textContent=`${translate('latest')}: ${coverage.latest_month} · ${translate(sampled?'sample':'full')}`;
     const coverageText=language==='zh'?`仅使用 NYC TLC 高运量网约车行程记录和官方区域对照表。区间 ${coverage.first_month} 至 ${coverage.latest_month}，共 ${coverage.coverage_months} 个有数据月份。最近窗口包含 ${coverage.recent_months} 个月。${sampled?'2019–2022 年采用季度抽样（保留 2019 年 2 月及 2022 年 4 月）；2023 年起逐月。抽样月份不能视为全年总量。':'全区间逐月覆盖。'} Uber 对应 HV0003，Lyft 对应 HV0005。`:`Only NYC TLC High Volume FHV records and the official zone lookup are used. Coverage: ${coverage.first_month} to ${coverage.latest_month}, ${coverage.coverage_months} observed months. The recent window contains ${coverage.recent_months} months. ${sampled?'2019–2022 use a quarterly sample, retaining February 2019 and April 2022; every month from 2023. Sampled months are not annual totals.':'Every month is included throughout the period.'} Uber is HV0003; Lyft is HV0005.`;
     document.getElementById('method-source').textContent=coverageText;
-    const inferredCount=coverage.inferred_zone_count;
-    const definition=language==='zh'?`区域识别：汇总 2025 年 2 月的合格 Uber/Lyft 行程，将 CBD 费用为正的订单占比严格高于 95% 的上车区域纳入，共 ${inferredCount} 个区域。固定该集合后，用任一端点是否在内分组。此方法会漏掉仅穿过拥堵区的行程，也使用了收费后的数据，因此不能作为独立的政策前处理组。机场单指任一端点为 1、132 或 138 区域，包含纽约市外的 Newark。`:`Zone inference: pool clean Uber/Lyft trips in February 2025; include pickup zones where strictly more than 95% have a positive CBD fee (${inferredCount} zones). Hold that set fixed and classify trips by either endpoint. This misses pass-through trips and uses post-policy information, so it is not an independent pre-policy treatment assignment. Airport trips have either endpoint in zone 1, 132, or 138, including Newark outside NYC.`;
-    document.getElementById('inference-note').textContent=definition+' '+describeGeographyWarnings();
+    const detail=language==='zh'?'固定该区域集合后进行描述性比较。识别规则使用收费后的信息，不能视为独立的政策前处理组，也不识别因果效应。机场单指任一端点为 1、132 或 138 区域。':'The inferred set stays fixed for descriptive comparisons. It uses post-policy information, so it is not an independent pre-policy treatment assignment and does not identify causal effects. Airport trips have either endpoint in zone 1, 132, or 138.';
+    document.getElementById('inference-note').textContent=describeZoneInference()+' '+detail;
   }
-  function describeGeographyWarnings(){
-    const warnings=data.keyNumbers.data.inferred_zone_warnings || [];
-    const samples=warnings.map(row=>language==='zh'?`${row.zone}（区域 ${row.location_id}，训练样本 ${formatValue(row.training_trips,'trips')} 单，收费占比 ${formatValue(row.charged_share,'share')}）`:`${row.zone} (zone ${row.location_id}, training n=${formatValue(row.training_trips,'trips')}, ${formatValue(row.charged_share,'share')} fee-positive)`).join(language==='zh'?'；':'; ');
-    if(!samples)return language==='zh'?'收费占比识别的是数据代理区域，不是法定边界，可能纳入误判区域。区内外对比对区域口径敏感。':'The fee-share rule creates a data proxy, not the legal CBD boundary, and can admit false-positive zones. Group comparisons are sensitive to this geography.';
-    return language==='zh'?`指定的 >95% 规则也纳入了训练样本极少的区域：${samples}。这些可能是误判区域；该代理区域并非法定 CBD 边界，因此区内外对比对区域口径敏感。`:`The specified >95% rule also admits very small training samples: ${samples}. These are possible false-positive zones; this proxy is not the legal CBD boundary. Group comparisons are sensitive to this geography.`;
+  function describeZoneInference(){
+    const count=data.keyNumbers.data.inferred_zone_count;
+    return language==='zh'?`拥堵区由数据推断：2025 年 2 月合格 Uber/Lyft 上车单数不少于 1,000、且超过 95% 的订单被收拥堵费的曼哈顿区域，共 ${count} 个。订单任一端在这些区域内就算区内关联订单，所以只穿过拥堵区的订单会被漏掉。`:`The congestion zone is inferred from the data: Manhattan pickup zones with at least 1,000 clean Uber/Lyft trips in February 2025, more than 95% of which paid the charge (${count} zones). A trip is zone-linked if either end is in that set, so trips that only pass through the zone are missed.`;
   }
 
   words.en.passenger_total_per_trip='Recorded total / trip';words.zh.passenger_total_per_trip='每单记录总额';
   words.en.cbd_fee_per_trip='CBD fee / trip';words.zh.cbd_fee_per_trip='每单 CBD 费用';
   words.en.methodologyLink='Detailed methodology ↗';words.zh.methodologyLink='详细方法说明 ↗';
-  words.en.geographyTitle='The inferred geography has edge cases';words.zh.geographyTitle='识别区域存在边界误判';
+  words.en.geographyTitle='How the zone is inferred';words.zh.geographyTitle='如何推断拥堵区';
   metricTypes.passenger_total_per_trip='money';metricTypes.cbd_fee_per_trip='money';
 
   function renderPage(){

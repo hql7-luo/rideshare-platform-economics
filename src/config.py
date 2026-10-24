@@ -16,6 +16,8 @@ COLORS = {'Uber': '#2a78d6', 'Lyft': '#d6337a'}
 AIRPORTS = (1, 132, 138)
 FIRST_MONTH = '2019-02'
 CBD_TRAIN_MONTH = '2025-02'
+CBD_RULE_VERSION = 'manhattan_1000_strict95_v2'
+CONGESTION_FIRST_MONTH = '2024-01'
 DISTANCE_BINS = ['0-1', '1-2', '2-3', '3-5', '5-10', '10-20', '20+']
 SUM_COLUMNS = ['trips', 'fare', 'driver_pay', 'take', 'miles', 'minutes',
                'wait_minutes', 'wait_trips', 'tips', 'tolls', 'bcf', 'sales_tax',

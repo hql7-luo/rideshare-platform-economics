@@ -1,5 +1,5 @@
 {
-  "created_at": "2026-10-23T17:04:56.513730-07:00",
+  "created_at": "2026-10-23T23:24:22.219864-07:00",
   "latest_month": "2026-08",
   "first_month": "2019-02",
   "months": [
@@ -191,7 +191,9 @@
   "sampling": "Full monthly coverage",
   "all_selected_months_complete": true,
   "cbd_training_month": "2025-02",
-  "cbd_threshold": ">95% of valid Uber/Lyft trips with fee>0",
+  "cbd_threshold": "Manhattan; >=1000 valid Uber/Lyft pickups in 2025-02; >95% with fee>0",
+  "congestion_first_month": "2024-01",
+  "congestion_rule_version": "manhattan_1000_strict95_v2",
   "discovery": [
     {
       "month": "2026-10",
@@ -984,8 +986,9 @@
       "missing_zero_columns": [
         "cbd_congestion_fee"
       ],
-      "download_seconds": 10.84,
-      "total_seconds": 13.84
+      "download_seconds": 13.0,
+      "total_seconds": 15.48,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2024-02",
@@ -997,8 +1000,9 @@
       "missing_zero_columns": [
         "cbd_congestion_fee"
       ],
-      "download_seconds": 13.33,
-      "total_seconds": 16.35
+      "download_seconds": 12.25,
+      "total_seconds": 14.55,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2024-03",
@@ -1010,8 +1014,9 @@
       "missing_zero_columns": [
         "cbd_congestion_fee"
       ],
-      "download_seconds": 11.41,
-      "total_seconds": 14.58
+      "download_seconds": 15.86,
+      "total_seconds": 18.34,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2024-04",
@@ -1023,8 +1028,9 @@
       "missing_zero_columns": [
         "cbd_congestion_fee"
       ],
-      "download_seconds": 11.05,
-      "total_seconds": 13.99
+      "download_seconds": 12.51,
+      "total_seconds": 14.79,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2024-05",
@@ -1036,8 +1042,9 @@
       "missing_zero_columns": [
         "cbd_congestion_fee"
       ],
-      "download_seconds": 11.43,
-      "total_seconds": 14.44
+      "download_seconds": 13.35,
+      "total_seconds": 15.8,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2024-06",
@@ -1049,8 +1056,9 @@
       "missing_zero_columns": [
         "cbd_congestion_fee"
       ],
-      "download_seconds": 11.1,
-      "total_seconds": 14.12
+      "download_seconds": 13.17,
+      "total_seconds": 15.55,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2024-07",
@@ -1062,8 +1070,9 @@
       "missing_zero_columns": [
         "cbd_congestion_fee"
       ],
-      "download_seconds": 13.29,
-      "total_seconds": 16.17
+      "download_seconds": 13.75,
+      "total_seconds": 16.57,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2024-08",
@@ -1075,8 +1084,9 @@
       "missing_zero_columns": [
         "cbd_congestion_fee"
       ],
-      "download_seconds": 10.03,
-      "total_seconds": 13.24
+      "download_seconds": 12.6,
+      "total_seconds": 15.2,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2024-09",
@@ -1088,8 +1098,9 @@
       "missing_zero_columns": [
         "cbd_congestion_fee"
       ],
-      "download_seconds": 13.22,
-      "total_seconds": 16.37
+      "download_seconds": 12.62,
+      "total_seconds": 15.16,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2024-10",
@@ -1101,8 +1112,9 @@
       "missing_zero_columns": [
         "cbd_congestion_fee"
       ],
-      "download_seconds": 22.91,
-      "total_seconds": 26.88
+      "download_seconds": 13.35,
+      "total_seconds": 16.24,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2024-11",
@@ -1114,8 +1126,9 @@
       "missing_zero_columns": [
         "cbd_congestion_fee"
       ],
-      "download_seconds": 11.36,
-      "total_seconds": 14.8
+      "download_seconds": 14.13,
+      "total_seconds": 17.09,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2024-12",
@@ -1127,8 +1140,9 @@
       "missing_zero_columns": [
         "cbd_congestion_fee"
       ],
-      "download_seconds": 11.67,
-      "total_seconds": 16.22
+      "download_seconds": 15.26,
+      "total_seconds": 18.05,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2025-01",
@@ -1138,8 +1152,9 @@
       "raw_rows": 20405666,
       "kept_rows": 20382899,
       "missing_zero_columns": [],
-      "download_seconds": 16.16,
-      "total_seconds": 20.75
+      "download_seconds": 14.14,
+      "total_seconds": 16.9,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2025-02",
@@ -1149,8 +1164,9 @@
       "raw_rows": 19339461,
       "kept_rows": 19332686,
       "missing_zero_columns": [],
-      "download_seconds": 12.99,
-      "total_seconds": 17.65
+      "download_seconds": 12.32,
+      "total_seconds": 16.62,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2025-03",
@@ -1160,8 +1176,9 @@
       "raw_rows": 20536879,
       "kept_rows": 20467644,
       "missing_zero_columns": [],
-      "download_seconds": 15.03,
-      "total_seconds": 18.82
+      "download_seconds": 13.69,
+      "total_seconds": 16.54,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2025-04",
@@ -1171,8 +1188,9 @@
       "raw_rows": 19753983,
       "kept_rows": 19734646,
       "missing_zero_columns": [],
-      "download_seconds": 14.17,
-      "total_seconds": 18.16
+      "download_seconds": 16.63,
+      "total_seconds": 19.62,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2025-05",
@@ -1182,8 +1200,9 @@
       "raw_rows": 21091193,
       "kept_rows": 21084291,
       "missing_zero_columns": [],
-      "download_seconds": 14.92,
-      "total_seconds": 19.3
+      "download_seconds": 14.08,
+      "total_seconds": 17.55,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2025-06",
@@ -1193,8 +1212,9 @@
       "raw_rows": 19868009,
       "kept_rows": 19848794,
       "missing_zero_columns": [],
-      "download_seconds": 14.55,
-      "total_seconds": 18.19
+      "download_seconds": 13.47,
+      "total_seconds": 16.65,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2025-07",
@@ -1204,8 +1224,9 @@
       "raw_rows": 19653012,
       "kept_rows": 19634225,
       "missing_zero_columns": [],
-      "download_seconds": 19.47,
-      "total_seconds": 23.14
+      "download_seconds": 13.48,
+      "total_seconds": 16.88,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2025-08",
@@ -1215,8 +1236,9 @@
       "raw_rows": 19271461,
       "kept_rows": 19079448,
       "missing_zero_columns": [],
-      "download_seconds": 15.15,
-      "total_seconds": 19.67
+      "download_seconds": 16.78,
+      "total_seconds": 19.96,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2025-09",
@@ -1226,8 +1248,9 @@
       "raw_rows": 19434641,
       "kept_rows": 19426375,
       "missing_zero_columns": [],
-      "download_seconds": 14.08,
-      "total_seconds": 17.65
+      "download_seconds": 14.07,
+      "total_seconds": 17.19,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2025-10",
@@ -1237,8 +1260,9 @@
       "raw_rows": 21308701,
       "kept_rows": 21270344,
       "missing_zero_columns": [],
-      "download_seconds": 15.69,
-      "total_seconds": 19.62
+      "download_seconds": 13.67,
+      "total_seconds": 17.21,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2025-11",
@@ -1248,8 +1272,9 @@
       "raw_rows": 20818240,
       "kept_rows": 20808716,
       "missing_zero_columns": [],
-      "download_seconds": 15.42,
-      "total_seconds": 19.46
+      "download_seconds": 16.91,
+      "total_seconds": 19.89,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2025-12",
@@ -1259,8 +1284,9 @@
       "raw_rows": 22108438,
       "kept_rows": 22067693,
       "missing_zero_columns": [],
-      "download_seconds": 16.87,
-      "total_seconds": 21.54
+      "download_seconds": 14.42,
+      "total_seconds": 17.74,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2026-01",
@@ -1270,8 +1296,9 @@
       "raw_rows": 20940373,
       "kept_rows": 20834257,
       "missing_zero_columns": [],
-      "download_seconds": 15.01,
-      "total_seconds": 18.73
+      "download_seconds": 13.71,
+      "total_seconds": 16.64,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2026-02",
@@ -1281,8 +1308,9 @@
       "raw_rows": 19875686,
       "kept_rows": 19866179,
       "missing_zero_columns": [],
-      "download_seconds": 14.43,
-      "total_seconds": 18.03
+      "download_seconds": 13.66,
+      "total_seconds": 16.59,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2026-03",
@@ -1292,8 +1320,9 @@
       "raw_rows": 22058358,
       "kept_rows": 22044488,
       "missing_zero_columns": [],
-      "download_seconds": 11.71,
-      "total_seconds": 15.97
+      "download_seconds": 17.49,
+      "total_seconds": 20.84,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2026-04",
@@ -1303,8 +1332,9 @@
       "raw_rows": 20995953,
       "kept_rows": 20966030,
       "missing_zero_columns": [],
-      "download_seconds": 11.96,
-      "total_seconds": 15.69
+      "download_seconds": 13.82,
+      "total_seconds": 16.63,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2026-05",
@@ -1314,8 +1344,9 @@
       "raw_rows": 22125744,
       "kept_rows": 22107936,
       "missing_zero_columns": [],
-      "download_seconds": 12.28,
-      "total_seconds": 16.7
+      "download_seconds": 14.67,
+      "total_seconds": 18.16,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2026-06",
@@ -1325,8 +1356,9 @@
       "raw_rows": 20775868,
       "kept_rows": 20759206,
       "missing_zero_columns": [],
-      "download_seconds": 11.36,
-      "total_seconds": 15.11
+      "download_seconds": 15.82,
+      "total_seconds": 18.82,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2026-07",
@@ -1336,8 +1368,9 @@
       "raw_rows": 20921249,
       "kept_rows": 20896777,
       "missing_zero_columns": [],
-      "download_seconds": 11.52,
-      "total_seconds": 15.2
+      "download_seconds": 13.53,
+      "total_seconds": 16.84,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     },
     {
       "month": "2026-08",
@@ -1347,8 +1380,9 @@
       "raw_rows": 20493480,
       "kept_rows": 20485569,
       "missing_zero_columns": [],
-      "download_seconds": 13.59,
-      "total_seconds": 17.97
+      "download_seconds": 13.33,
+      "total_seconds": 16.23,
+      "congestion_rule_version": "manhattan_1000_strict95_v2"
     }
   ],
   "source": "NYC TLC High Volume FHV trip records",

@@ -33,7 +33,7 @@ Negative gross take is possible under a driver-payment floor. It does not by its
 - [TLC Industry Notice 24-10, December 5, 2024](https://www.nyc.gov/assets/tlc/downloads/pdf/industry-notices/industry_notice_24_10_english.pdf): implementation began **January 5, 2025**; the zone is Manhattan south of and including 60th Street, with specified highway/tunnel-connection exclusions.
 - [March 3, 2026 Opinion and Order, MTA v. Duffy, 25-cv-1413, ECF 195](https://docs.justia.com/cases/federal/district-courts/new-york/nysdce/1:2025cv01413/637159/195): the court vacated the challenged federal termination attempts. [Official New York State statement on the decision](https://www.governor.ny.gov/news/statement-governor-kathy-hochul-148).
 
-The legal payer and ultimate economic incidence are different questions. These trip records show recorded charges, fare, and driver pay; they cannot isolate how much the charge caused each party to absorb. The endpoint-based inferred-zone comparison also misses through-trips whose endpoints lie outside the inferred set. It is a descriptive difference-in-differences comparison with no established parallel-trends assumption.
+The legal payer and ultimate economic incidence are different questions. These trip records show recorded charges, fare, and driver pay; they cannot isolate how much the charge caused each party to absorb. For the empirical comparison, the project selects Manhattan pickup zones with at least 1,000 eligible Uber/Lyft pickups in February 2025, more than 95% of which have a positive CBD fee. That rule is an analytical proxy rather than an official boundary map. The endpoint-based comparison misses through-trips whose endpoints lie outside the inferred set. It is a descriptive difference-in-differences comparison with no established parallel-trends assumption.
 
 ## External trip-count check
 
@@ -47,4 +47,4 @@ The same TLC report, p. 3, identifies Uber requests forwarded to yellow taxis as
 
 本项目只把 TLC 月度行程和区域对照表作为分析输入。平台抽成是基础车费减司机收入的毛额，并非利润。UCLA 的 9.0% 和 20.7% 同样按总额计算；中位数口径只涉及其车费与司机收入增速。双方清洗范围不同，所以这里只做交叉核对，不声称完整复刻。
 
-拥堵费法定由乘客支付、平台代收代缴，但最终由谁承担成本不能仅凭前后对比确定。最低收入调整、车型和线路结构、价格变化、转派出租车等因素都可能影响结果。区内外对比为描述性结果，不作因果结论。
+拥堵费法定由乘客支付、平台代收代缴，但最终由谁承担成本不能仅凭前后对比确定。项目的区域代理限于 2025 年 2 月有效上车单不少于 1,000、且超过 95% 被收 CBD 费用的曼哈顿区域，任一端在集合内即算关联订单，会漏掉只穿过拥堵区的订单。最低收入调整、车型和线路结构、价格变化、转派出租车等因素都可能影响结果。区内外对比为描述性结果，不作因果结论。

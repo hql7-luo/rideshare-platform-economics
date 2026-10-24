@@ -13,7 +13,8 @@ import pandas as pd
 import requests
 
 from config import (RAW, INTERIM, PROCESSED, SQL, TRIP_URL, ZONE_URL,
-                    FIRST_MONTH, CBD_TRAIN_MONTH, SUM_COLUMNS, create_folders)
+                    FIRST_MONTH, CBD_TRAIN_MONTH, CBD_RULE_VERSION,
+                    CONGESTION_FIRST_MONTH, SUM_COLUMNS, create_folders)
 
 TABLE_DIMS = {'monthly': [], 'distance': ['distance_bin'],
               'hourly': ['weekday', 'hour'], 'airport': ['is_airport'],
@@ -95,6 +96,7 @@ def open_month(connection, parquet_path, month, zone_ids):
     connection.execute(read_sql('prepare', month=month,
                                 zone_ids=','.join(map(str, zone_ids)) or '-1'))
     connection.execute(read_sql('clean'))
+    connection.execute(read_sql('read_zones', path=str(PROCESSED / 'taxi_zone_lookup.csv').replace("'", "''")))
     return sorted(set(OPTIONAL_NUMBERS) - set(available))
 
 
@@ -122,8 +124,18 @@ def process_month(session, month, zone_ids, train=False):
     missing = open_month(connection, raw_path, month, zone_ids)
     if train:
         zones = connection.execute(read_sql('infer_cbd_zones')).df()
+        inferred_path = PROCESSED / 'inferred_cbd_zones.csv'
+        old_zones = pd.read_csv(inferred_path) if inferred_path.exists() else pd.DataFrame()
+        old_ids = old_zones.loc[old_zones.in_zone.astype(str).str.lower() == 'true', 'location_id'].astype(int).tolist() if not old_zones.empty else []
+        zones['rule_version'] = CBD_RULE_VERSION
         zones.to_csv(PROCESSED / 'inferred_cbd_zones.csv', index=False)
         zone_ids = zones.loc[zones.in_zone, 'location_id'].astype(int).tolist()
+        print(f'Old zones ({len(old_ids)}): {old_ids}', flush=True)
+        print(f'New zones ({len(zone_ids)}): {zone_ids}', flush=True)
+        print(f'Removed: {sorted(set(old_ids) - set(zone_ids))}; added: {sorted(set(zone_ids) - set(old_ids))}', flush=True)
+        revision = zones[['location_id', 'borough', 'zone', 'trips', 'charged_share', 'in_zone']].copy()
+        revision['previous_in_zone'] = revision.location_id.isin(old_ids)
+        revision.to_csv(PROCESSED / 'cbd_zone_revision.csv', index=False)
         open_month(connection, raw_path, month, zone_ids)
     audit = connection.execute(read_sql('audit')).df()
     audit.insert(0, 'month', month)
@@ -143,7 +155,8 @@ def process_month(session, month, zone_ids, train=False):
                 'kept_rows': int(audit.loc[audit.company.isin(['Uber','Lyft']), 'kept_rows'].sum()),
                 'missing_zero_columns': missing,
                 'download_seconds': round(download_seconds, 2),
-                'total_seconds': round(time.monotonic() - started, 2)}
+                'total_seconds': round(time.monotonic() - started, 2),
+                'congestion_rule_version': CBD_RULE_VERSION}
     (staging / 'complete.json').write_text(json.dumps(metadata, indent=2))
     if target.exists():
         shutil.rmtree(target)
@@ -160,14 +173,20 @@ def combine_checkpoints(months, latest, discovery, sampling):
     for name in ['audit'] + list(TABLE_DIMS):
         if complete:
             table = pd.concat([pd.read_csv(INTERIM / month / f'{name}.csv') for month in complete], ignore_index=True)
+            if name == 'congestion':
+                table = table.loc[table.month >= CONGESTION_FIRST_MONTH]
             table.to_csv(PROCESSED / f'{name}.csv', index=False, float_format='%.6f')
     metadata = [json.loads((INTERIM / month / 'complete.json').read_text()) for month in complete]
+    congestion_complete = all(item.get('congestion_rule_version') == CBD_RULE_VERSION
+                              for item in metadata if item['month'] >= CONGESTION_FIRST_MONTH)
     manifest = {'created_at': datetime.now(ZoneInfo('America/Los_Angeles')).isoformat(),
                 'latest_month': latest, 'first_month': FIRST_MONTH, 'months': complete,
                 'expected_months': months, 'sampling': sampling,
-                'all_selected_months_complete': complete == months,
+                'all_selected_months_complete': complete == months and congestion_complete,
                 'cbd_training_month': CBD_TRAIN_MONTH,
-                'cbd_threshold': '>95% of valid Uber/Lyft trips with fee>0',
+                'cbd_threshold': 'Manhattan; >=1000 valid Uber/Lyft pickups in 2025-02; >95% with fee>0',
+                'congestion_first_month': CONGESTION_FIRST_MONTH,
+                'congestion_rule_version': CBD_RULE_VERSION,
                 'discovery': discovery, 'files': metadata,
                 'source': 'NYC TLC High Volume FHV trip records', 'zone_url': ZONE_URL}
     (PROCESSED / 'manifest.json').write_text(json.dumps(manifest, indent=2))
@@ -186,6 +205,8 @@ def restore_checkpoints(manifest):
               for name in ['audit'] + list(TABLE_DIMS)}
     for name, table in tables.items():
         missing_months = set(months) - set(table['month'])
+        if name == 'congestion' and manifest.get('congestion_first_month'):
+            missing_months = {month for month in missing_months if month >= manifest['congestion_first_month']}
         if missing_months:
             raise ValueError(f'Committed {name} summary is missing months: {sorted(missing_months)}')
     metadata = {item['month']: item for item in manifest.get('files', [])}
@@ -200,6 +221,8 @@ def restore_checkpoints(manifest):
         if audited.set_index('company')['kept_rows'].to_dict() != expected:
             raise ValueError(f'Committed monthly and audit counts disagree: {month}')
         for name in TABLE_DIMS:
+            if name == 'congestion' and month < manifest.get('congestion_first_month', FIRST_MONTH):
+                continue
             table = tables[name].loc[tables[name].month == month]
             if table.groupby('company')['trips'].sum().to_dict() != expected:
                 raise ValueError(f'Committed {name} counts do not reconcile: {month}')
@@ -217,6 +240,9 @@ def build_data():
     parser.add_argument('--full-history', action='store_true', help='Disable the two-hour sampling fallback')
     args = parser.parse_args()
     create_folders()
+    # Discard an interrupted raw download before starting another month.
+    for raw_path in RAW.glob('fhvhv_tripdata_*.parquet'):
+        raw_path.unlink()
     session = requests.Session()
     latest, discovery = (args.latest, []) if args.latest else discover_latest(session)
     all_months = list_months(FIRST_MONTH, latest)
@@ -230,7 +256,8 @@ def build_data():
         # Normalize line endings without changing the source values.
         zone_path.write_text(zone_path.read_text())
     inferred_path = PROCESSED / 'inferred_cbd_zones.csv'
-    if not inferred_path.exists():
+    zones = pd.read_csv(inferred_path) if inferred_path.exists() else pd.DataFrame()
+    if zones.empty or 'rule_version' not in zones or not zones.rule_version.eq(CBD_RULE_VERSION).all():
         process_month(session, CBD_TRAIN_MONTH, [], train=True)
     zones = pd.read_csv(inferred_path)
     zone_ids = zones.loc[zones.in_zone.astype(str).str.lower() == 'true', 'location_id'].astype(int).tolist()
@@ -241,8 +268,11 @@ def build_data():
     for month in order:
         if sampled and month < '2023-01' and month[5:] not in ['02' if month[:4]=='2019' else '01', '04','07','10']:
             continue
-        if (INTERIM / month / 'complete.json').exists():
-            continue
+        checkpoint = INTERIM / month / 'complete.json'
+        if checkpoint.exists():
+            metadata = json.loads(checkpoint.read_text())
+            if month < CONGESTION_FIRST_MONTH or metadata.get('congestion_rule_version') == CBD_RULE_VERSION:
+                continue
         process_month(session, month, zone_ids)
         completed = [json.loads(path.read_text()) for path in INTERIM.glob('????-??/complete.json')]
         if not sampled and not args.full_history and completed:

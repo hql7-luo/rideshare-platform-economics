@@ -62,3 +62,39 @@ def test_restore_does_not_mark_an_incomplete_month_complete(saved_summaries, dam
     with pytest.raises(ValueError):
         build_data.restore_checkpoints(manifest)
     assert not (interim / '2025-02' / 'complete.json').exists()
+
+
+def test_restore_accepts_old_month_without_out_of_scope_congestion(saved_summaries):
+    # The corrected congestion series starts in 2024; other history stays complete.
+    processed, interim, manifest = saved_summaries
+    month = '2023-12'
+    for name in ['audit'] + list(build_data.TABLE_DIMS):
+        path = processed / f'{name}.csv'
+        table = pd.read_csv(path)
+        table['month'] = month
+        if name == 'congestion':
+            table = table.iloc[:0]
+        table.to_csv(path, index=False)
+    manifest['months'] = [month]
+    manifest['files'][0]['month'] = month
+    manifest['congestion_first_month'] = '2024-01'
+    build_data.restore_checkpoints(manifest)
+    assert (interim / month / 'complete.json').exists()
+    assert pd.read_csv(interim / month / 'congestion.csv').empty
+    assert pd.read_csv(interim / month / 'monthly.csv').trips.sum() == 3
+
+
+def test_old_congestion_checkpoint_cannot_mark_rebuild_complete(saved_summaries):
+    # Completed downloads with an old classifier still require a congestion rebuild.
+    processed, interim, manifest = saved_summaries
+    build_data.restore_checkpoints(manifest)
+    build_data.combine_checkpoints(['2025-02'], '2025-02', [], 'Full monthly coverage')
+    result = json.loads((processed / 'manifest.json').read_text())
+    assert not result['all_selected_months_complete']
+    metadata_path = interim / '2025-02' / 'complete.json'
+    metadata = json.loads(metadata_path.read_text())
+    metadata['congestion_rule_version'] = build_data.CBD_RULE_VERSION
+    metadata_path.write_text(json.dumps(metadata))
+    build_data.combine_checkpoints(['2025-02'], '2025-02', [], 'Full monthly coverage')
+    result = json.loads((processed / 'manifest.json').read_text())
+    assert result['all_selected_months_complete']

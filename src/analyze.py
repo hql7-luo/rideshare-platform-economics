@@ -116,6 +116,27 @@ def calculate_change(before, after, metric):
     return 100 * (after / before - 1) if before != 0 else float("nan")
 
 
+def summarize_convergence(monthly):
+    """Record observed take-rate endpoints and the recent range for both companies."""
+    early = monthly[monthly["month"].isin(["2019-02", "2019-03"])]
+    recent = monthly[monthly["month"] >= "2024-01"]
+    latest_month = monthly["month"].max()
+    rates = {}
+    for month in sorted(early["month"].unique()):
+        rates[month] = early[early["month"] == month].set_index("company")["take_rate"].to_dict()
+    company_ranges = {}
+    for company in COMPANIES:
+        values = recent[recent["company"] == company]["take_rate"]
+        company_ranges[company] = {"minimum": values.min(), "maximum": values.max()}
+    return {
+        "early_take_rates": rates,
+        "range_start": "2024-01", "range_end": latest_month,
+        "minimum": recent["take_rate"].min(), "maximum": recent["take_rate"].max(),
+        "company_ranges": company_ranges,
+        "baseline_caveat": "Uber's early gross take was unusually low; endpoint growth comparisons are sensitive to that starting point.",
+    }
+
+
 def build_congestion_comparison(congestion, months):
     """Use matched calendar months and pooled ratios; this is a descriptive comparison."""
     matched = [month for month in months if month.startswith("2025-") and month[5:] != "01" and "2024-" + month[5:] in months]
@@ -196,12 +217,23 @@ def build_narratives(numbers, distance, airport):
     u = latest["Uber"]
     l = latest["Lyft"]
     b = baseline["Uber"]
+    lb = baseline["Lyft"]
+    convergence = numbers["convergence"]
+    early = convergence["early_take_rates"]
+    recent_range = f"{100 * convergence['minimum']:.0f}%–{100 * convergence['maximum']:.0f}%"
+    convergence_en = (f"Gross take rates have moved closer: in 2019-02 Lyft was {format_pct(early['2019-02']['Lyft'])} and Uber {format_pct(early['2019-02']['Uber'])} (Uber was {format_pct(early['2019-03']['Uber'])} in 2019-03). "
+                      f"Since 2024, both companies' monthly rates have been roughly {recent_range}; in {current_month}, Uber was {format_pct(u['take_rate'])} and Lyft {format_pct(l['take_rate'])}. "
+                      "Uber's early take was unusually low, so growth comparisons using 2019-02 are sensitive to that starting point.")
+    convergence_zh = (f"两家毛额抽成率在靠拢：2019-02 Lyft 为 {format_pct(early['2019-02']['Lyft'])}，Uber 为 {format_pct(early['2019-02']['Uber'])}（2019-03 Uber 为 {format_pct(early['2019-03']['Uber'])}）；"
+                      f"2024 年以来两家月度抽成率都在约 {recent_range}，{current_month} Uber 为 {format_pct(u['take_rate'])}、Lyft 为 {format_pct(l['take_rate'])}。"
+                      "Uber 在 2019 年初的抽成很低，以 2019-02 为基准的增长对比会受这个起点影响。")
     s = short["Uber"]
     findings = [
         {"id": "take", "en": f"In {current_month}, Uber's gross take rate was {format_pct(u['take_rate'])} ({format_money(u['take_per_trip'])}/trip), versus Lyft's {format_pct(l['take_rate'])} ({format_money(l['take_per_trip'])}/trip).",
          "zh": f"{current_month}，Uber 毛额抽成率为 {format_pct(u['take_rate'])}（每单 {format_money(u['take_per_trip'])}），Lyft 为 {format_pct(l['take_rate'])}（每单 {format_money(l['take_per_trip'])}）。"},
-        {"id": "growth", "en": f"From {b['baseline_month']} to {current_month}, Uber's mean base fare per trip changed {format_change(b['fare_growth_pct'])}, while mean driver pay changed {format_change(b['driver_pay_growth_pct'])}; its take rate moved {b['take_rate_change_pp']:+.1f} percentage points.",
-         "zh": f"从 {b['baseline_month']} 到 {current_month}，Uber 平均每单基础车费变动 {format_change(b['fare_growth_pct'])}，司机收入变动 {format_change(b['driver_pay_growth_pct'])}；抽成率变动 {b['take_rate_change_pp']:+.1f} 个百分点。"},
+        {"id": "growth", "en": f"From {b['baseline_month']} to {current_month}, Uber's mean base fare per trip grew {format_change(b['fare_growth_pct'])} and mean driver pay {format_change(b['driver_pay_growth_pct'])}; Lyft's fare grew {format_change(lb['fare_growth_pct'])} and driver pay {format_change(lb['driver_pay_growth_pct'])}.",
+         "zh": f"从 {b['baseline_month']} 到 {current_month}，Uber 平均每单基础车费增长 {format_change(b['fare_growth_pct'])}、司机收入增长 {format_change(b['driver_pay_growth_pct'])}；Lyft 车费增长 {format_change(lb['fare_growth_pct'])}、司机收入增长 {format_change(lb['driver_pay_growth_pct'])}。"},
+        {"id": "convergence", "en": convergence_en, "zh": convergence_zh},
         {"id": "share", "en": f"Over the latest 12 months, Lyft handled {format_pct(recent['Lyft']['share'])} of Uber/Lyft trips; its mean gross take was {format_money(recent['Lyft']['take_per_trip'])}/trip versus Uber's {format_money(recent['Uber']['take_per_trip'])}.",
          "zh": f"最近 12 个月，Lyft 占 Uber/Lyft 合计订单的 {format_pct(recent['Lyft']['share'])}；平均每单毛额抽成为 {format_money(recent['Lyft']['take_per_trip'])}，Uber 为 {format_money(recent['Uber']['take_per_trip'])}。"},
         {"id": "short", "en": f"For Uber trips up to 2 miles in the latest 12 months, gross take rate was {format_pct(s['take_rate'])}; driver pay exceeded base fare on {format_pct(s['negative_take_share'])} of trips.",
@@ -211,8 +243,8 @@ def build_narratives(numbers, distance, airport):
     ]
     memo = [
         {"title_en": "Test price changes against driver pay and retention", "title_zh": "定价试验同时看司机收入与留存",
-         "evidence_en": f"Uber's mean fare changed {format_change(b['fare_growth_pct'])} since {b['baseline_month']}, versus {format_change(b['driver_pay_growth_pct'])} for driver pay; latest take rate is {format_pct(u['take_rate'])}.",
-         "evidence_zh": f"自 {b['baseline_month']}，Uber 平均车费变动 {format_change(b['fare_growth_pct'])}，司机收入变动 {format_change(b['driver_pay_growth_pct'])}；最新抽成率为 {format_pct(u['take_rate'])}。",
+         "evidence_en": f"From {b['baseline_month']} to {current_month}, mean fare/pay grew {format_change(b['fare_growth_pct'])}/{format_change(b['driver_pay_growth_pct'])} for Uber and {format_change(lb['fare_growth_pct'])}/{format_change(lb['driver_pay_growth_pct'])} for Lyft. " + convergence_en,
+         "evidence_zh": f"从 {b['baseline_month']} 到 {current_month}，Uber 平均每单车费/司机收入增长 {format_change(b['fare_growth_pct'])}/{format_change(b['driver_pay_growth_pct'])}，Lyft 为 {format_change(lb['fare_growth_pct'])}/{format_change(lb['driver_pay_growth_pct'])}。" + convergence_zh,
          "action_en": "Test by zone and hour; track completions, repeat usage and driver supply alongside gross take. This historical gap does not establish pricing power.",
          "action_zh": "按区域与时段做小规模定价试验，同时看完成单量、复购、司机供给和毛额抽成；历史增速差不能直接证明提价空间。"},
         {"title_en": "Allocate supply by wait time, including airport trips", "title_zh": "按等待时间配置运力，单独看机场",
@@ -242,8 +274,6 @@ def write_narratives(numbers):
     sample_text = json.dumps(sample, ensure_ascii=False) if not isinstance(sample, str) else sample
     findings_en = "\n".join(f"- {row['en']}" for row in numbers["findings"])
     findings_zh = "\n".join(f"- {row['zh']}" for row in numbers["findings"])
-    warning_en = "; ".join(f"zone {row['location_id']} ({row['zone']}): {row['training_trips']} training pickup(s)" for row in data["inferred_zone_warnings"])
-    warning_zh = "；".join(f"区域 {row['location_id']}（{row['zone']}）：训练月仅 {row['training_trips']} 单上车" for row in data["inferred_zone_warnings"])
     ucla = "; ".join(f"{row['month']}: project {format_pct(row['project_take_rate'])}, UCLA {format_pct(row['reported_take_rate'])}" for row in numbers["ucla_check"])
     run = "python src/build_data.py && python src/analyze.py && python src/make_charts.py && python src/build_explorer.py"
     page = "https://hql7-luo.github.io/rideshare-platform-economics/"
@@ -288,8 +318,7 @@ The standalone [HTML file](docs/index.html) also opens locally. It includes metr
 - Keep fare > 0, driver pay ≥ 0, 0 < miles ≤ 100, duration 1–240 minutes, and pickup month matching the file. Valid waits are 0–60 minutes; invalid waits are excluded from the wait denominator only. Missing historical optional fee fields are zero. Record raw and retained counts by company and month.
 - **Gross take = base passenger fare − driver pay. Take rate = sum(take) / sum(base fare).** Neither includes tips, tolls, taxes or surcharges. A group rate is a ratio of totals, not a mean of trip rates. Fare and pay growth compare mean dollars/trip in {data['first_month']} with {latest}; dollars are nominal.
 - Distance, weekday-hour, airport, borough and pickup-zone comparisons pool the latest 12 calendar months. Airport-linked means either endpoint is zone 1, 132 or 138, including Newark. Speed = total miles / total occupied trip hours; pay/trip is not hourly driver earnings. Market share covers Uber and Lyft only.
-- Congestion-zone membership is inferred from clean pooled Uber/Lyft pickup records in February 2025: more than 95% with a positive `cbd_congestion_fee`. A trip is zone-linked if either endpoint is in that fixed inferred set. Compare available matched February–December 2025 months with the same 2024 months, skipping January. Report growth within each group and the difference between growth rates; this is **descriptive, not a causal estimate**. Pooled per-trip metrics are computed after summing all matched trips.
-- **Inferred-zone warning:** {warning_en}. Both meet the requested threshold with very small denominators. In particular, Newark is outside the legal CBD, but its endpoint trips enter the zone-linked group under this rule. Treat the groups as a data-inferred proxy; these false positives can materially affect the comparison. No extra volume cutoff is imposed.
+- Congestion-zone membership is inferred from clean pooled Uber/Lyft pickup records in February 2025: Manhattan zones with at least 1,000 trips and more than 95% with a positive `cbd_congestion_fee`. This identifies {data['inferred_zone_count']} zones. A trip is zone-linked if either endpoint is in that fixed set; trips that only pass through the zone are missed. Compare available matched February–December 2025 months with the same 2024 months, skipping January. Report growth within each group and the difference between growth rates; this is **descriptive, not a causal estimate**. Pooled per-trip metrics are computed after summing all matched trips.
 - Policy context: the MTA passenger charge is $1.50 per qualifying trip from January 5, 2025; the March 3, 2026 court decision vacated the challenged federal termination attempts. TLC's March 1, 2026 in-city non-WAV driver-pay rates are $1.283/mile plus $0.681/minute, including utilization; these are not retroactively applied to past trips. See the primary sources in [source notes](docs/sources.md) and the structured receipt in `data/results/source_context.json`.
 - Pooled Uber + Lyft UCLA cross-check: {ucla}. UCLA also uses a ratio of totals for take rate. Its filters differ: non-WAV, NYC endpoints, no shared 2019 trips, fare/pay above $0.01, duration up to five hours. Its separate 50% fare / 31% pay growth statement uses medians; this project uses means. [Original UCLA report](https://www.labor.ucla.edu/wp-content/uploads/2023/02/Taxi-Commission-policy-brief-2.9.23.pdf).{validation}
 
@@ -347,9 +376,7 @@ tests/           # Hand-written SQL and metric checks
 
 毛额抽成＝基础车费－司机收入；抽成率＝合计抽成÷合计基础车费，不含小费、过路费、税费和附加费。先汇总再算比例；车费和司机收入增长比较名义平均每单金额。速度用总里程÷总行程小时，司机每单收入不是小时工资。机场单任一端为区域 1、132、138，包含 Newark。
 
-用 2025 年 2 月超过 95% 订单被收 CBD 费用的上车区域识别收费区，任一端在该集合内即为区内关联订单。跳过 2025 年 1 月，把 2025 年 2—12 月的可用月份与 2024 年同月比较；分别计算区内外变化，再比较增速差。它只是差中差思路的描述性对照，不能写成政策因果效果。UCLA 的 9% 与 20.7% 及本项目对应核对值均为两平台合计的总额比例，但清洗、无障碍车、纽约两端和拼车范围不同；其 50%/31% 增长使用中位数，本项目使用均值。原始行数核对及政策原文见[来源说明](docs/sources.md)。
-
-**区域推断警示：**{warning_zh}。它们在极小分母下通过阈值，尤其 Newark 不在法定 CBD 内，却会因端点规则被计入区内关联组。这里保留指定规则，不另加最低单量门槛；应把区域视作数据推断代理，其误分类可能显著影响区内外结果。
+用 2025 年 2 月上车单数不少于 1,000、且超过 95% 订单被收 CBD 费用的曼哈顿区域识别收费区，共 {data['inferred_zone_count']} 个区域；任一端在该集合内即为区内关联订单，所以只穿过拥堵区的订单会被漏掉。跳过 2025 年 1 月，把 2025 年 2—12 月的可用月份与 2024 年同月比较；分别计算区内外变化，再比较增速差。它只是差中差思路的描述性对照，不能写成政策因果效果。UCLA 的 9% 与 20.7% 及本项目对应核对值均为两平台合计的总额比例，但清洗、无障碍车、纽约两端和拼车范围不同；其 50%/31% 增长使用中位数，本项目使用均值。原始行数核对及政策原文见[来源说明](docs/sources.md)。
 
 政策背景：拥堵区自 2025-01-05 对符合条件的网约车每单向乘客收取 $1.50；2026-03-03 法院撤销了受到挑战的联邦终止决定。2026-03-01 起，纽约市内非无障碍车辆的最低司机支付标准为每英里 $1.283 加每分钟 $0.681，已含利用率调整；本项目不把这一标准追溯应用到历史订单。
 
@@ -367,7 +394,7 @@ MIT License.
     lines = ["# Strategy memo / 策略备忘录", "", "**Independent project · Perspective: Uber strategy analyst / 假设视角：Uber 策略分析师**", "", f"Data through {latest}; recent window {data['recent_start']}–{data['recent_end']}. Nominal USD; gross take is before platform costs. / 数据截至 {latest}，最近窗口 {data['recent_start']}—{data['recent_end']}；金额为名义美元，毛额抽成未扣平台成本。", ""]
     for index, item in enumerate(numbers["memo"], 1):
         lines.extend([f"**{index}. {item['title_en']} / {item['title_zh']}**", "", item["evidence_en"] + " " + item["action_en"], "", item["evidence_zh"] + " " + item["action_zh"], ""])
-    lines.extend(["**Limits / 局限**", "", "Descriptive hypotheses, not causal effects: pricing, minimum-pay changes and trip mix confound comparisons. Gross take is not profit; incentives/discounts may be incomplete. The inferred proxy includes Newark and zone 105 from just one and two training pickups, respectively; it also misses through-trips. Economic incidence remains unidentified. Evidence: `data/results/key_numbers.json` and result CSVs.", "", "这是描述性假设；价格、最低收入与订单结构混杂，毛额抽成不是利润，优惠和激励可能遗漏。推断代理因训练月仅 1、2 单就纳入 Newark 与区域 105，还会漏掉穿区订单；经济负担归属无法识别。数字见 key_numbers.json 与结果表。", ""])
+    lines.extend(["**Limits / 局限**", "", "Descriptive hypotheses, not causal effects: pricing, minimum-pay changes and trip mix confound comparisons. Gross take is not profit; incentives/discounts may be incomplete. The inferred endpoint proxy misses trips that only pass through the zone. Economic incidence remains unidentified. Evidence: `data/results/key_numbers.json` and result CSVs.", "", "这是描述性假设；价格、最低收入与订单结构混杂，毛额抽成不是利润，优惠和激励可能遗漏。按端点推断的代理会漏掉只穿过拥堵区的订单；经济负担归属无法识别。数字见 key_numbers.json 与结果表。", ""])
     (ROOT / "docs" / "memo.md").write_text("\n".join(lines), encoding="utf-8")
 
 
@@ -409,6 +436,9 @@ def main():
     zone = add_share(zone, ["company"])
     borough = add_share(sum_groups(zone, ["company", "borough"]), ["company"])
     congestion = sum_groups(read_table("congestion"), ["month", "company", "zone_group"])
+    expected_congestion_months = [month for month in months if month >= "2024-01"]
+    if sorted(congestion["month"].unique()) != expected_congestion_months:
+        raise ValueError("Finish the congestion rebuild for every month from January 2024 onward.")
     comparison, fees, matched = build_congestion_comparison(congestion, months)
 
     # Compare means at fixed endpoints rather than average monthly growth rates.
@@ -446,6 +476,10 @@ def main():
                 raise ValueError(f"Additive totals do not reconcile: {name}, {company}")
     if not ((monthly["fare"] - monthly["driver_pay"] - monthly["take"]).abs() < monthly["fare"].abs() * 1e-8).all():
         raise ValueError("Gross take does not reconcile to fare minus driver pay.")
+    congestion_totals = congestion.groupby(["month", "company"])[SUM_COLUMNS].sum()
+    monthly_totals = monthly[monthly["month"].isin(expected_congestion_months)].set_index(["month", "company"])[SUM_COLUMNS]
+    if not ((congestion_totals - monthly_totals).abs() <= monthly_totals.abs().clip(lower=1) * 1e-8).all().all():
+        raise ValueError("Congestion groups do not reconcile to the committed monthly totals.")
     if matched != [f"2025-{month:02d}" for month in range(2, 13)]:
         raise ValueError("The congestion comparison requires all matched February-December months.")
     for name, table in tables.items():
@@ -456,20 +490,32 @@ def main():
         pooled_dict[company] = selected.drop(columns=["company", "period"]).set_index("metric").to_dict("index")
     fee_dict = fees[(fees["year"] == 2025) & (fees["zone_group"] == "Zone-linked")].drop(columns=["year", "zone_group"]).set_index("company").to_dict("index")
     inferred_zones = pd.read_csv(PROCESSED / "inferred_cbd_zones.csv")
-    inferred_count = int(inferred_zones["in_zone"].isin([True, 1, "True", "true", "1"]).sum())
-    warnings = inferred_zones[inferred_zones["location_id"].isin([1, 105]) & inferred_zones["in_zone"].isin([True, 1, "True", "true", "1"])].merge(lookup[["location_id", "zone"]], on="location_id", how="left")
-    warnings = warnings.rename(columns={"trips": "training_trips"})[["location_id", "zone", "training_trips", "charged_share"]].to_dict("records")
+    inferred_set = inferred_zones[inferred_zones["in_zone"].isin([True, 1, "True", "true", "1"])].copy()
+    inferred_count = len(inferred_set)
+    inferred_rule = {"training_month": "2025-02", "borough": "Manhattan",
+                     "minimum_pickup_trips": 1000, "charged_share_greater_than": 0.95,
+                     "version": manifest["congestion_rule_version"],
+                     "endpoint_rule": "Either pickup or drop-off is in the fixed inferred set; pass-through-only trips are missed."}
+    inference_check = inferred_set.merge(lookup[["location_id", "borough"]], on="location_id", how="left", suffixes=("", "_lookup"))
+    borough_column = "borough_lookup" if "borough_lookup" in inference_check else "borough"
+    if not (inference_check[borough_column].eq("Manhattan") & inference_check["trips"].ge(1000) & inference_check["charged_share"].gt(0.95)).all():
+        raise ValueError("The inferred zone set must satisfy the Manhattan, volume and charged-share rules.")
     numbers = {"project": "NYC Rideshare Economics: Uber vs Lyft", "as_of_date": manifest.get("created_at", "2026-10-23")[:10],
                "data": {"first_month": months[0], "latest_month": latest, "recent_start": recent_start,
                         "recent_end": latest, "recent_months": len(recent_months), "coverage_months": len(months),
                         "sampling": manifest.get("sampling", "Full monthly coverage"), "months": months,
                         "matched_congestion_months": matched, "inferred_zone_count": inferred_count,
-                        "inferred_zone_warnings": warnings},
+                        "congestion_first_month": manifest["congestion_first_month"],
+                        "congestion_rule_version": manifest["congestion_rule_version"],
+                        "inferred_zone_ids": sorted(inferred_set["location_id"].astype(int).tolist()),
+                        "inferred_zone_rule": inferred_rule},
                "colors": {"Uber": "#2a78d6", "Lyft": "#d6337a"},
                "definitions": {"take": "base_passenger_fare - driver_pay", "take_rate": "sum(take) / sum(base_passenger_fare)", "unit": "nominal USD", "warning": "Gross take is not profit; tips, tolls, taxes and fees excluded from take."},
                "recent12": snapshot.set_index("company").to_dict("index"),
                "latest_month": monthly[monthly["month"] == latest].drop(columns="month").set_index("company").to_dict("index"),
-               "baseline": baseline.to_dict("records"), "ucla_check": ucla.to_dict("records"),
+               "baseline": baseline.to_dict("records"), "convergence": summarize_convergence(monthly),
+               "ucla_check": ucla.to_dict("records"),
+               "validation": validation.to_dict("records"), "source_context": source_context,
                "congestion": {"months": matched, "pooled": pooled_dict, "fee_metrics": fee_dict}}
     numbers["findings"], numbers["memo"] = build_narratives(numbers, distance, airport)
     numbers = clean_json(numbers)

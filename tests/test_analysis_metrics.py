@@ -4,7 +4,7 @@ import math
 import pandas as pd
 import pytest
 
-from analyze import SUM_COLUMNS, add_metrics, build_congestion_comparison, build_external_validation, sum_groups
+from analyze import SUM_COLUMNS, add_metrics, build_congestion_comparison, build_external_validation, sum_groups, summarize_convergence
 
 
 def make_totals(**changes):
@@ -34,6 +34,28 @@ def test_empty_denominators_stay_missing_instead_of_infinite():
     for column in ['take_rate', 'fare_per_trip', 'take_per_trip', 'speed_mph',
                    'fare_per_mile', 'avg_wait_minutes', 'negative_take_share']:
         assert math.isnan(row[column])
+
+
+def test_convergence_reports_both_company_endpoints_and_observed_recent_range():
+    table = pd.DataFrame([
+        {'month': '2019-02', 'company': 'Uber', 'take_rate': 0.02},
+        {'month': '2019-02', 'company': 'Lyft', 'take_rate': 0.32},
+        {'month': '2019-03', 'company': 'Uber', 'take_rate': -0.05},
+        {'month': '2019-03', 'company': 'Lyft', 'take_rate': 0.30},
+        {'month': '2024-01', 'company': 'Uber', 'take_rate': 0.28},
+        {'month': '2024-01', 'company': 'Lyft', 'take_rate': 0.19},
+        {'month': '2026-08', 'company': 'Uber', 'take_rate': 0.22},
+        {'month': '2026-08', 'company': 'Lyft', 'take_rate': 0.24},
+    ])
+    result = summarize_convergence(table)
+    assert result['early_take_rates']['2019-02'] == {'Uber': 0.02, 'Lyft': 0.32}
+    assert result['early_take_rates']['2019-03']['Uber'] == -0.05
+    assert result['minimum'] == pytest.approx(0.19)
+    assert result['maximum'] == pytest.approx(0.28)
+    assert result['company_ranges']['Uber'] == {'minimum': 0.22, 'maximum': 0.28}
+    assert result['company_ranges']['Lyft'] == {'minimum': 0.19, 'maximum': 0.24}
+    assert result['range_start'] == '2024-01'
+    assert result['range_end'] == '2026-08'
 
 
 def test_external_validation_uses_all_raw_rows_before_cleaning():

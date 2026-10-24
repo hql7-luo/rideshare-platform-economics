@@ -36,13 +36,15 @@ The monthly builder downloads a single file, runs the SQL, saves small atomic ch
 
 ## Congestion comparison
 
-The inferred zone set uses clean pooled Uber/Lyft trips in **February 2025**, the first full charge month. A pickup zone is included only when **more than 95%** of its trips have a positive `cbd_congestion_fee`. This fixed zone set is applied to both 2024 and 2025. Its detailed numerator and denominator are committed in `inferred_cbd_zones.csv`. It is an empirical proxy, not a legal boundary map; no minimum-zone-volume threshold is imposed.
+The inferred zone set uses clean pooled Uber/Lyft trips in **February 2025**, the first full charge month. A pickup zone is included only if its official lookup borough is **Manhattan**, it has **at least 1,000** eligible pickups that month, and **more than 95%** have a positive `cbd_congestion_fee`. This fixed zone set is applied to all comparison months from January 2024 onward. Its detailed numerator, denominator and inclusion decision are committed in `inferred_cbd_zones.csv`; the rule and included IDs are also recorded in `data/results/key_numbers.json`. It is an empirical proxy, not a legal boundary map.
 
 Zone-linked means either pickup or drop-off is in that fixed set. Other trips can still pass through the charging area, which contaminates the comparison group. January 2025 is excluded. For each available February–December 2025 month, compare the same 2024 month. Pooled comparisons sum the matched months before calculating means and rates.
 
-**Small-denominator warning:** zone 1 (Newark Airport) enters the inferred set from just one February 2025 pickup, charged on that trip. Zone 105 (Governor's Island/Ellis Island/Liberty Island) enters from two pickups, both charged. Newark lies outside the legal CBD; applying the requested endpoint rule nevertheless places its endpoint trips in the Zone-linked group. These false positives can materially alter the comparison. The main analysis preserves the specified rule without adding a minimum-volume cutoff. Use **data-inferred proxy**, not legal charging-zone membership, when interpreting these groups. The observed training counts are also saved in `data/results/key_numbers.json` under `data.inferred_zone_warnings`.
-
 The results retain both absolute differences-in-differences and differences in percentage changes. Take-rate changes use percentage points. Other percentage changes equal `100 × (2025 / 2024 − 1)`, and the descriptive gap subtracts Other growth from Zone-linked growth. These are **not causal effects**. Parallel trends are not established, and trip mix, pricing, minimum-pay adjustments, weather, economic conditions and taxi dispatch shifts can change the result. The charge's legal payer is the passenger; ultimate economic burden cannot be identified from this comparison.
+
+## Historical growth and convergence
+
+Fare and pay growth compare each company's mean dollars per trip in February 2019 with the latest month, using each metric's own starting value. Uber's unusually low early gross take makes these endpoint comparisons sensitive to the first month's fare/pay relationship. A low starting take rate does not itself prove later pricing power. The observed take-rate range since January 2024 uses every available monthly company rate, not a pooled multiyear rate. These endpoints and ranges are recorded in `baseline` and `convergence` in `data/results/key_numbers.json`.
 
 ## Files
 

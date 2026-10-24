@@ -7,7 +7,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.dates as mdates
 from matplotlib.colors import LinearSegmentedColormap, Normalize
-from matplotlib.ticker import PercentFormatter
+from matplotlib.ticker import MultipleLocator, PercentFormatter
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -56,19 +56,29 @@ def annotate_end(axis, x, y, text, color, offset=(8, 0)):
                   fontsize=9, va="center", fontweight="semibold")
 
 
+def annotate_ordered_ends(axis, endpoints):
+    """Keep a higher endpoint's label above a lower one when lines finish close."""
+    ordered = sorted(endpoints, key=lambda item: item["y"])
+    for index, item in enumerate(ordered):
+        vertical_offset = 8 * (2 * index - len(ordered) + 1)
+        annotate_end(axis, item["x"], item["y"], item["label"], item["color"], (8, vertical_offset))
+
+
 def plot_take_rate(monthly, numbers):
     latest = numbers["latest_month"]
-    higher_company = max(COMPANIES, key=lambda company: latest[company]["take_rate"])
     figure, axis = plt.subplots(figsize=(10.8, 4.7))
+    endpoints = []
     for company in COMPANIES:
         table = monthly[monthly["company"] == company].sort_values("date")
         axis.plot(table["date"], 100 * table["take_rate"], color=COLORS[company])
         end = table.iloc[-1]
-        offset = (8, 8) if company == higher_company else (8, -8)
-        annotate_end(axis, end["date"], 100 * end["take_rate"], f"{company} {100 * end['take_rate']:.1f}%", COLORS[company], offset)
+        endpoints.append({"x": end["date"], "y": 100 * end["take_rate"],
+                          "label": f"{company} {100 * end['take_rate']:.1f}%", "color": COLORS[company]})
+    annotate_ordered_ends(axis, endpoints)
     axis.set_title(f"Latest gross take rates: Uber {100 * latest['Uber']['take_rate']:.1f}%, Lyft {100 * latest['Lyft']['take_rate']:.1f}%", loc="left", pad=17)
     axis.set_ylabel("Gross take / base fare (%)")
     axis.yaxis.set_major_formatter(PercentFormatter(xmax=100, decimals=0))
+    axis.yaxis.set_major_locator(MultipleLocator(10))
     style_dates(axis)
     figure.subplots_adjust(bottom=0.16, right=0.86)
     save_figure(figure, "01_take_rate_trend.png", "Source: NYC TLC · Ratio of sums; gross take = base fare − driver pay; not profit. Tips, tolls, taxes and fees excluded.")
@@ -80,10 +90,13 @@ def plot_fare_pay(monthly, numbers):
     for axis, company in zip(axes, COMPANIES):
         table = monthly[monthly["company"] == company].sort_values("date")
         base = table.iloc[0]
-        for metric, label, linestyle, offset in [("fare_per_trip", "Fare", "-", (7, 5)), ("driver_pay_per_trip", "Pay", "--", (7, -5))]:
+        endpoints = []
+        for metric, label, linestyle in [("fare_per_trip", "Fare", "-"), ("driver_pay_per_trip", "Pay", "--")]:
             values = 100 * table[metric] / base[metric]
             axis.plot(table["date"], values, color=COLORS[company], linestyle=linestyle, label=label)
-            annotate_end(axis, table.iloc[-1]["date"], values.iloc[-1], f"{label} {values.iloc[-1]:.0f}", COLORS[company], offset)
+            endpoints.append({"x": table.iloc[-1]["date"], "y": values.iloc[-1],
+                              "label": f"{label} {values.iloc[-1]:.0f}", "color": COLORS[company]})
+        annotate_ordered_ends(axis, endpoints)
         row = baseline[company]
         axis.set_title(f"{company}: fare {row['fare_growth_pct']:+.1f}% · pay {row['driver_pay_growth_pct']:+.1f}%", loc="left")
         axis.axhline(100, color="#9ba8b7", linewidth=0.7)
@@ -197,19 +210,23 @@ def plot_congestion_speed(congestion):
     table["date"] = pd.to_datetime(table["month"])
     figure, axes = plt.subplots(1, 2, figsize=(12.2, 4.6), sharey=True)
     for axis, company in zip(axes, COMPANIES):
-        for group, style, label, offset in [("Zone-linked", "-", "Zone", (6, -5)), ("Other", "--", "Other", (6, 5))]:
+        endpoints = []
+        for group, style, label in [("Zone-linked", "-", "Zone"), ("Other", "--", "Other")]:
             selected = table[(table["company"] == company) & (table["zone_group"] == group)].sort_values("date")
             axis.plot(selected["date"], selected["speed_mph"], color=COLORS[company], linestyle=style, label=label)
             end = selected.iloc[-1]
-            annotate_end(axis, end["date"], end["speed_mph"], f"{label} {end['speed_mph']:.1f}", COLORS[company], offset)
+            endpoints.append({"x": end["date"], "y": end["speed_mph"],
+                              "label": f"{label} {end['speed_mph']:.1f}", "color": COLORS[company]})
+        annotate_ordered_ends(axis, endpoints)
         axis.axvline(pd.Timestamp("2025-01-05"), color="#929dab", linewidth=1, linestyle=":")
         axis.set_title(company, loc="left", color=COLORS[company])
         axis.legend(frameon=False, fontsize=9)
-        axis.xaxis.set_major_locator(mdates.MonthLocator(interval=6))
-        axis.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
-        axis.tick_params(axis="x", rotation=25)
+        axis.xaxis.set_major_locator(mdates.MonthLocator(bymonth=[1, 7]))
+        axis.xaxis.set_major_formatter(mdates.DateFormatter("%b\n%Y"))
+        axis.tick_params(axis="x", rotation=0)
         left, right = axis.get_xlim()
         axis.set_xlim(left, right + (right - left) * 0.17)
+        axis.set_xticks(pd.date_range(table["date"].min(), table["date"].max(), freq="6MS"))
     axes[0].set_ylabel("Occupied trip speed (mph)")
     uber_latest = table[(table["company"] == "Uber") & (table["month"] == table["month"].max())].set_index("zone_group")
     figure.suptitle(f"Uber's latest zone-linked speed is {uber_latest.loc['Zone-linked', 'speed_mph']:.1f} mph vs {uber_latest.loc['Other', 'speed_mph']:.1f} elsewhere", x=0.07, ha="left", weight="semibold", fontsize=14)
