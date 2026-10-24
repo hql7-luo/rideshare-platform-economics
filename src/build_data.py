@@ -222,11 +222,13 @@ def build_data():
     all_months = list_months(FIRST_MONTH, latest)
     old_manifest = json.loads((PROCESSED / 'manifest.json').read_text()) if (PROCESSED / 'manifest.json').exists() else {}
     restore_checkpoints(old_manifest)
-    sampling = old_manifest.get('sampling', 'Full monthly coverage')
+    sampling = 'Full monthly coverage' if args.full_history else old_manifest.get('sampling', 'Full monthly coverage')
     sampled = 'quarter' in sampling.lower() and not args.full_history
     zone_path = PROCESSED / 'taxi_zone_lookup.csv'
     if not zone_path.exists():
         download_file(session, ZONE_URL, zone_path)
+        # Normalize line endings without changing the source values.
+        zone_path.write_text(zone_path.read_text())
     inferred_path = PROCESSED / 'inferred_cbd_zones.csv'
     if not inferred_path.exists():
         process_month(session, CBD_TRAIN_MONTH, [], train=True)
@@ -239,8 +241,9 @@ def build_data():
     for month in order:
         if sampled and month < '2023-01' and month[5:] not in ['02' if month[:4]=='2019' else '01', '04','07','10']:
             continue
-        if not (INTERIM / month / 'complete.json').exists():
-            process_month(session, month, zone_ids)
+        if (INTERIM / month / 'complete.json').exists():
+            continue
+        process_month(session, month, zone_ids)
         completed = [json.loads(path.read_text()) for path in INTERIM.glob('????-??/complete.json')]
         if not sampled and not args.full_history and completed:
             mean_download = sum(item['download_seconds'] for item in completed) / len(completed)

@@ -1,0 +1,2 @@
+month,raw_rows,official_rows,difference_rows,difference_pct,source_url,scope
+2025-12,22108438,22108438,0,0,https://www.nyc.gov/assets/tlc/downloads/pdf/license-pause-report-2026-02.pdf,All unfiltered HVFHV parquet rows; before cleaning

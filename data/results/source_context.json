@@ -1,0 +1,85 @@
+{
+  "checked_on": "2026-10-23",
+  "analytical_inputs": "TLC HVFHV parquet files and TLC taxi_zone_lookup.csv only",
+  "sources": [
+    {
+      "id": "tlc_dictionary",
+      "url": "https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_hvfhs.pdf",
+      "title": "Data Dictionary - High Volume FHV Trip Records",
+      "document_date": "2025-03-18",
+      "pages": [1],
+      "facts": ["HV0003 is Uber; HV0005 is Lyft", "base_passenger_fare excludes tolls, tips, taxes and fees", "driver_pay excludes tolls and tips and is net of commission, surcharges or taxes", "trip_time is seconds", "shared_request_flag does not require a successful pool match", "cbd_congestion_fee is the MTA charge beginning January 5, 2025"]
+    },
+    {
+      "id": "ucla_original",
+      "url": "https://www.labor.ucla.edu/wp-content/uploads/2023/02/Taxi-Commission-policy-brief-2.9.23.pdf",
+      "title": "Analysis of High Volume For-Hire Vehicle Data for New York City. Selected Months, 2019-2022",
+      "document_date": "2023-02",
+      "pages": [4, 5, 7, 8],
+      "commission_definition": "(sum(base passenger fare) - sum(driver pay)) / sum(base passenger fare); not median",
+      "benchmarks": [
+        {"month": "2019-02", "take_rate": 0.09, "fare": 231589273, "driver_pay": 210670750, "analyzed_trips": 14008641, "database_trips": 20159102},
+        {"month": "2022-04", "take_rate": 0.207, "fare": 382455149, "driver_pay": 303407665, "analyzed_trips": 16954477, "database_trips": 17752561}
+      ],
+      "median_growth": {"fare": 0.5, "driver_pay": 0.31},
+      "restrictions": ["Uber and Lyft only", "non-WAV", "both endpoints in NYC", "fare and driver pay above $0.01", "exclude negative distance/time and trips above five hours", "non-shared trips in 2019"],
+      "replication_status": "External cross-check only; project cleaning and population differ"
+    },
+    {
+      "id": "tlc_2026_minimum_pay",
+      "url": "https://www.nyc.gov/assets/tlc/downloads/pdf/industry-notices/industry_notice_26_03_english.pdf",
+      "title": "Industry Notice 26-03",
+      "document_date": "2026-02-24",
+      "effective_date": "2026-03-01",
+      "non_wav_per_mile_usd": 1.283,
+      "non_wav_per_minute_usd": 0.681,
+      "increase": 0.0336,
+      "note": "Rates already include utilization; not applied retroactively. WAV and out-of-town rates differ."
+    },
+    {
+      "id": "tlc_2025_pay_change",
+      "url": "https://www.nyc.gov/assets/tlc/downloads/pdf/driver_pay_rules_6_6_25.pdf",
+      "effective_date_source": "https://rules.cityofnewyork.us/rule/driver-pay-high-volume-for-hire-vehicles/",
+      "adopted_date": "2025-06-25",
+      "effective_date": "2025-08-01",
+      "march_2025_per_minute_cpi_increase": 0.0392,
+      "note": "Changes to expense and utilization formula are concurrent confounders, not congestion-fee effects."
+    },
+    {
+      "id": "mta_per_trip_charge",
+      "url": "https://www.mta.info/fares-tolls/tolls/congestion-relief-zone/taxi-fhv-tolls",
+      "hvfhv_charge_usd": 1.5,
+      "payer": "Passenger; participating base collects and remits to MTA",
+      "scope": "to, from, within or through the Congestion Relief Zone"
+    },
+    {
+      "id": "tlc_congestion_start",
+      "url": "https://www.nyc.gov/assets/tlc/downloads/pdf/industry-notices/industry_notice_24_10_english.pdf",
+      "document_date": "2024-12-05",
+      "effective_date": "2025-01-05",
+      "scope": "Manhattan south of and including 60th Street, excluding specified highways and tunnel connections"
+    },
+    {
+      "id": "court_2026_congestion",
+      "url": "https://docs.justia.com/cases/federal/district-courts/new-york/nysdce/1:2025cv01413/637159/195",
+      "official_statement": "https://www.governor.ny.gov/news/statement-governor-kathy-hochul-148",
+      "document_date": "2026-03-03",
+      "case": "Metropolitan Transportation Authority et al. v. Duffy et al., 25-cv-1413, ECF 195",
+      "finding": "Challenged federal termination attempts unlawful and vacated; program may continue",
+      "note": "Describes the cited decision, not a guarantee against future appeals or policy changes"
+    },
+    {
+      "id": "tlc_official_trip_count",
+      "url": "https://www.nyc.gov/assets/tlc/downloads/pdf/license-pause-report-2026-02.pdf",
+      "title": "February 2026 For-Hire Vehicle License Review Report and Determination",
+      "table": "Table 1, printed page 2",
+      "month": "2025-12",
+      "raw_trips": 22108438,
+      "scope": "High-volume FHV trips; currently Uber and Lyft",
+      "prior_month_year": "2024-12",
+      "prior_year_trips": 21068851,
+      "all_fhv_trips_not_comparison_target": 24035329,
+      "comparison": "Unfiltered parquet row count before cleaning; disclose discrepancies and possible extract revisions"
+    }
+  ]
+}

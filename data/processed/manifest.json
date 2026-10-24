@@ -1,0 +1,1356 @@
+{
+  "created_at": "2026-10-23T17:04:56.513730-07:00",
+  "latest_month": "2026-08",
+  "first_month": "2019-02",
+  "months": [
+    "2019-02",
+    "2019-03",
+    "2019-04",
+    "2019-05",
+    "2019-06",
+    "2019-07",
+    "2019-08",
+    "2019-09",
+    "2019-10",
+    "2019-11",
+    "2019-12",
+    "2020-01",
+    "2020-02",
+    "2020-03",
+    "2020-04",
+    "2020-05",
+    "2020-06",
+    "2020-07",
+    "2020-08",
+    "2020-09",
+    "2020-10",
+    "2020-11",
+    "2020-12",
+    "2021-01",
+    "2021-02",
+    "2021-03",
+    "2021-04",
+    "2021-05",
+    "2021-06",
+    "2021-07",
+    "2021-08",
+    "2021-09",
+    "2021-10",
+    "2021-11",
+    "2021-12",
+    "2022-01",
+    "2022-02",
+    "2022-03",
+    "2022-04",
+    "2022-05",
+    "2022-06",
+    "2022-07",
+    "2022-08",
+    "2022-09",
+    "2022-10",
+    "2022-11",
+    "2022-12",
+    "2023-01",
+    "2023-02",
+    "2023-03",
+    "2023-04",
+    "2023-05",
+    "2023-06",
+    "2023-07",
+    "2023-08",
+    "2023-09",
+    "2023-10",
+    "2023-11",
+    "2023-12",
+    "2024-01",
+    "2024-02",
+    "2024-03",
+    "2024-04",
+    "2024-05",
+    "2024-06",
+    "2024-07",
+    "2024-08",
+    "2024-09",
+    "2024-10",
+    "2024-11",
+    "2024-12",
+    "2025-01",
+    "2025-02",
+    "2025-03",
+    "2025-04",
+    "2025-05",
+    "2025-06",
+    "2025-07",
+    "2025-08",
+    "2025-09",
+    "2025-10",
+    "2025-11",
+    "2025-12",
+    "2026-01",
+    "2026-02",
+    "2026-03",
+    "2026-04",
+    "2026-05",
+    "2026-06",
+    "2026-07",
+    "2026-08"
+  ],
+  "expected_months": [
+    "2019-02",
+    "2019-03",
+    "2019-04",
+    "2019-05",
+    "2019-06",
+    "2019-07",
+    "2019-08",
+    "2019-09",
+    "2019-10",
+    "2019-11",
+    "2019-12",
+    "2020-01",
+    "2020-02",
+    "2020-03",
+    "2020-04",
+    "2020-05",
+    "2020-06",
+    "2020-07",
+    "2020-08",
+    "2020-09",
+    "2020-10",
+    "2020-11",
+    "2020-12",
+    "2021-01",
+    "2021-02",
+    "2021-03",
+    "2021-04",
+    "2021-05",
+    "2021-06",
+    "2021-07",
+    "2021-08",
+    "2021-09",
+    "2021-10",
+    "2021-11",
+    "2021-12",
+    "2022-01",
+    "2022-02",
+    "2022-03",
+    "2022-04",
+    "2022-05",
+    "2022-06",
+    "2022-07",
+    "2022-08",
+    "2022-09",
+    "2022-10",
+    "2022-11",
+    "2022-12",
+    "2023-01",
+    "2023-02",
+    "2023-03",
+    "2023-04",
+    "2023-05",
+    "2023-06",
+    "2023-07",
+    "2023-08",
+    "2023-09",
+    "2023-10",
+    "2023-11",
+    "2023-12",
+    "2024-01",
+    "2024-02",
+    "2024-03",
+    "2024-04",
+    "2024-05",
+    "2024-06",
+    "2024-07",
+    "2024-08",
+    "2024-09",
+    "2024-10",
+    "2024-11",
+    "2024-12",
+    "2025-01",
+    "2025-02",
+    "2025-03",
+    "2025-04",
+    "2025-05",
+    "2025-06",
+    "2025-07",
+    "2025-08",
+    "2025-09",
+    "2025-10",
+    "2025-11",
+    "2025-12",
+    "2026-01",
+    "2026-02",
+    "2026-03",
+    "2026-04",
+    "2026-05",
+    "2026-06",
+    "2026-07",
+    "2026-08"
+  ],
+  "sampling": "Full monthly coverage",
+  "all_selected_months_complete": true,
+  "cbd_training_month": "2025-02",
+  "cbd_threshold": ">95% of valid Uber/Lyft trips with fee>0",
+  "discovery": [
+    {
+      "month": "2026-10",
+      "status": 403
+    },
+    {
+      "month": "2026-09",
+      "status": 403
+    },
+    {
+      "month": "2026-08",
+      "status": 200
+    }
+  ],
+  "files": [
+    {
+      "month": "2019-02",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2019-02.parquet",
+      "bytes": 513054623,
+      "sha256": "b3efb77e26acf7926bb4d20ff3f4f441cb5d8debca76ce92bde94e4116cc24d2",
+      "raw_rows": 20159102,
+      "kept_rows": 18094656,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.34,
+      "total_seconds": 20.8
+    },
+    {
+      "month": "2019-03",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2019-03.parquet",
+      "bytes": 610854382,
+      "sha256": "53098177e9021a77d7a38f2bf205864ce6a03c253e451641d5f525967f21b000",
+      "raw_rows": 23864598,
+      "kept_rows": 21859705,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 15.95,
+      "total_seconds": 27.92
+    },
+    {
+      "month": "2019-04",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2019-04.parquet",
+      "bytes": 559656651,
+      "sha256": "cc1cf8773e5af3acbd8e1e8c248fed96ac5841545f4a22fea8b2d9845440c1d9",
+      "raw_rows": 21734822,
+      "kept_rows": 19857642,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 12.46,
+      "total_seconds": 22.88
+    },
+    {
+      "month": "2019-05",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2019-05.parquet",
+      "bytes": 570821186,
+      "sha256": "b5bd02285256d6fd610476d2a219f60de05d292057acb710b7d60a39aa1e8455",
+      "raw_rows": 22329247,
+      "kept_rows": 20483323,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 12.51,
+      "total_seconds": 24.21
+    },
+    {
+      "month": "2019-06",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2019-06.parquet",
+      "bytes": 536191926,
+      "sha256": "49b297586e6a2770161a347b417da3bdcd0950f52a830d9875a9cc7b8cdf3330",
+      "raw_rows": 21001990,
+      "kept_rows": 19336623,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.9,
+      "total_seconds": 22.72
+    },
+    {
+      "month": "2019-07",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2019-07.parquet",
+      "bytes": 516008365,
+      "sha256": "4d7ff2974d66b5de6ed33d20a5b27343136b2426fff79645460583beacdb1897",
+      "raw_rows": 20303312,
+      "kept_rows": 17993386,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.27,
+      "total_seconds": 21.46
+    },
+    {
+      "month": "2019-08",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2019-08.parquet",
+      "bytes": 501435971,
+      "sha256": "3dea6f0e6c3ebee8e42ccd277541c93c7da3c42443b098f4f4d232f6562ab472",
+      "raw_rows": 20126113,
+      "kept_rows": 16260340,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.15,
+      "total_seconds": 20.78
+    },
+    {
+      "month": "2019-09",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2019-09.parquet",
+      "bytes": 515944585,
+      "sha256": "ef68aa968ccbc18388820f5b17f6ddbc57424a571366960aa244a1dbb68a2f22",
+      "raw_rows": 20069321,
+      "kept_rows": 18498243,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.16,
+      "total_seconds": 21.51
+    },
+    {
+      "month": "2019-10",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2019-10.parquet",
+      "bytes": 549370339,
+      "sha256": "4020a9c36e5f54eaefcaacba489dc03d01318ce44ccdab7db2be12b74053cac8",
+      "raw_rows": 21162290,
+      "kept_rows": 19784892,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 13.08,
+      "total_seconds": 25.19
+    },
+    {
+      "month": "2019-11",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2019-11.parquet",
+      "bytes": 561011664,
+      "sha256": "b874a6c03589669a6a1d56ef477c536ed13710c4d13adfca35fd1677d9473d50",
+      "raw_rows": 21635568,
+      "kept_rows": 20689976,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 15.0,
+      "total_seconds": 26.94
+    },
+    {
+      "month": "2019-12",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2019-12.parquet",
+      "bytes": 576648876,
+      "sha256": "51be33d4c29dce5dc0c235742e6a4db1569986d1268478f4112514035a2851fd",
+      "raw_rows": 22243901,
+      "kept_rows": 21055197,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 13.09,
+      "total_seconds": 24.68
+    },
+    {
+      "month": "2020-01",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2020-01.parquet",
+      "bytes": 531275933,
+      "sha256": "dd659fdf2274da0ca9b22c65d25369ad7c3fe58ecc9638f0e7f3e45d882f73f1",
+      "raw_rows": 20569368,
+      "kept_rows": 19691128,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.4,
+      "total_seconds": 22.46
+    },
+    {
+      "month": "2020-02",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2020-02.parquet",
+      "bytes": 558874878,
+      "sha256": "43bbe0aa8e110b69b8d557f5edb0c24d90b8e85495e82d12249a0988f08a98de",
+      "raw_rows": 21725100,
+      "kept_rows": 21037407,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 15.25,
+      "total_seconds": 26.49
+    },
+    {
+      "month": "2020-03",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2020-03.parquet",
+      "bytes": 346478514,
+      "sha256": "defd8fcc8bdc7fd7f4627f9507be477b486c67fe499b5bb09a6156f435c9f860",
+      "raw_rows": 13392928,
+      "kept_rows": 13028948,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 7.93,
+      "total_seconds": 14.89
+    },
+    {
+      "month": "2020-04",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2020-04.parquet",
+      "bytes": 114835005,
+      "sha256": "ea07f2cbf075c4638e01af24808f9c30a9f53a956e16eebbe5519d08f28fc1e6",
+      "raw_rows": 4312909,
+      "kept_rows": 4238849,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 3.26,
+      "total_seconds": 5.52
+    },
+    {
+      "month": "2020-05",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2020-05.parquet",
+      "bytes": 160544713,
+      "sha256": "46f15443e2e819e284d040332e54d3802dce323021efe68ddffa450c9c8e6f0c",
+      "raw_rows": 6089999,
+      "kept_rows": 5967674,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 4.18,
+      "total_seconds": 7.26
+    },
+    {
+      "month": "2020-06",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2020-06.parquet",
+      "bytes": 197972781,
+      "sha256": "2538e15f0dbcd7d423c0679ab240f4061830362332a6661c5e523bdfe8a007de",
+      "raw_rows": 7555193,
+      "kept_rows": 7409530,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 4.92,
+      "total_seconds": 8.81
+    },
+    {
+      "month": "2020-07",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2020-07.parquet",
+      "bytes": 260252547,
+      "sha256": "8be263de43c02ff99b917a2aa24d4ddf822f9e4e87b2dabffd0b051158521155",
+      "raw_rows": 9958454,
+      "kept_rows": 9785640,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 6.2,
+      "total_seconds": 11.47
+    },
+    {
+      "month": "2020-08",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2020-08.parquet",
+      "bytes": 290447928,
+      "sha256": "0a503905c58ea596a1e26bd760f99c3f5a30ed19ad8bb3e0875c859c0f75e38f",
+      "raw_rows": 11096852,
+      "kept_rows": 10913751,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 6.94,
+      "total_seconds": 12.68
+    },
+    {
+      "month": "2020-09",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2020-09.parquet",
+      "bytes": 314689382,
+      "sha256": "ffc0d16811d436cd79ccc2aa5a01ddf3f890204ab3a746db9bfadef2fef1f4b5",
+      "raw_rows": 12106669,
+      "kept_rows": 11945706,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 7.56,
+      "total_seconds": 13.72
+    },
+    {
+      "month": "2020-10",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2020-10.parquet",
+      "bytes": 345178105,
+      "sha256": "ef5f5a8340ae988d80748c06ac7a4d2efa44ed392c1671b69852f2db306de107",
+      "raw_rows": 13268411,
+      "kept_rows": 13102909,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 8.07,
+      "total_seconds": 14.93
+    },
+    {
+      "month": "2020-11",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2020-11.parquet",
+      "bytes": 301856152,
+      "sha256": "0c373d73f3cdffa25fafbd89b6e6d9525800bf7bf3ef124166f2f17785ddfa65",
+      "raw_rows": 11596865,
+      "kept_rows": 11451231,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 6.89,
+      "total_seconds": 12.66
+    },
+    {
+      "month": "2020-12",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2020-12.parquet",
+      "bytes": 303264028,
+      "sha256": "6c38a30c3aac70b7bcc4f442df927ffa9ea8af8885540b1b06fe3125e240a65a",
+      "raw_rows": 11637123,
+      "kept_rows": 11493382,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 9.62,
+      "total_seconds": 15.47
+    },
+    {
+      "month": "2021-01",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2021-01.parquet",
+      "bytes": 308924937,
+      "sha256": "549d75fe7667d6aa8f332ce0bdea45ae0203ab13be08bfa5d5be66b6a81100dd",
+      "raw_rows": 11908468,
+      "kept_rows": 11783520,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 9.25,
+      "total_seconds": 15.33
+    },
+    {
+      "month": "2021-02",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2021-02.parquet",
+      "bytes": 302633211,
+      "sha256": "ab3ba97879e5733a60ddf78334418c5a7fa6409cc2c0e7842e41ecc6d96662af",
+      "raw_rows": 11613942,
+      "kept_rows": 11500442,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 7.04,
+      "total_seconds": 12.87
+    },
+    {
+      "month": "2021-03",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2021-03.parquet",
+      "bytes": 368370915,
+      "sha256": "b97e7d8401ff092a5dfb09fec45c65cecb13ad9a44c78b7ab21f283210184553",
+      "raw_rows": 14227393,
+      "kept_rows": 14095359,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 8.26,
+      "total_seconds": 15.45
+    },
+    {
+      "month": "2021-04",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2021-04.parquet",
+      "bytes": 368416040,
+      "sha256": "78e6d8b612d0dd6db5cf59663734eeeb559a81957de42c2584221b62a8107d37",
+      "raw_rows": 14111371,
+      "kept_rows": 13977447,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 8.44,
+      "total_seconds": 15.91
+    },
+    {
+      "month": "2021-05",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2021-05.parquet",
+      "bytes": 387251422,
+      "sha256": "cc02ee0a630f4d4adf08bc3964f73bfb76c34c9e30b675d957885cc418ebf77b",
+      "raw_rows": 14719171,
+      "kept_rows": 14594245,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 8.49,
+      "total_seconds": 16.2
+    },
+    {
+      "month": "2021-06",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2021-06.parquet",
+      "bytes": 394114750,
+      "sha256": "26d410a62d1ec585462b3f6d1383531a2f24341df02d769850a00cf46ef6eaa2",
+      "raw_rows": 14961892,
+      "kept_rows": 14828047,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 9.2,
+      "total_seconds": 17.51
+    },
+    {
+      "month": "2021-07",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2021-07.parquet",
+      "bytes": 395966912,
+      "sha256": "62916e6bd53098e5f68b27d64b19298d3e3ecd1fe0ac88def6c49bcbf7636455",
+      "raw_rows": 15027174,
+      "kept_rows": 14902512,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 8.89,
+      "total_seconds": 16.7
+    },
+    {
+      "month": "2021-08",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2021-08.parquet",
+      "bytes": 382326987,
+      "sha256": "b4590b7d8575c083de597cde454fd88d8154a9665e2f8f8a6b6560ef4e9ace4d",
+      "raw_rows": 14499696,
+      "kept_rows": 14375337,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 8.69,
+      "total_seconds": 16.35
+    },
+    {
+      "month": "2021-09",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2021-09.parquet",
+      "bytes": 393687782,
+      "sha256": "1484901bb4e44fb0adce0e2e266ee306e27c0039a2919ed437554293d1641f02",
+      "raw_rows": 14886055,
+      "kept_rows": 14761477,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 9.55,
+      "total_seconds": 17.64
+    },
+    {
+      "month": "2021-10",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2021-10.parquet",
+      "bytes": 430115885,
+      "sha256": "36d21cc7814a5cd6f5e75d04fc081f81d48c2c893feecaa3638ef1710b27ada9",
+      "raw_rows": 16545356,
+      "kept_rows": 16478366,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 21.73,
+      "total_seconds": 30.4
+    },
+    {
+      "month": "2021-11",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2021-11.parquet",
+      "bytes": 411061458,
+      "sha256": "dd901d7654f7ad114e4b84ed3ae4b187c9845525d82b1b587712aa9903c41126",
+      "raw_rows": 16041639,
+      "kept_rows": 15996466,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 8.86,
+      "total_seconds": 17.13
+    },
+    {
+      "month": "2021-12",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2021-12.parquet",
+      "bytes": 410934116,
+      "sha256": "b68df47fc36c3536915f4585e0cdc456106131d46e8283215df10c7a17468410",
+      "raw_rows": 16054495,
+      "kept_rows": 16014483,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 9.28,
+      "total_seconds": 17.45
+    },
+    {
+      "month": "2022-01",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2022-01.parquet",
+      "bytes": 374619188,
+      "sha256": "535945d730abd37d9e5f11ce9a77d19a0cd0e2a91b8f950c233eb4cc75d39761",
+      "raw_rows": 14751591,
+      "kept_rows": 14721223,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 8.73,
+      "total_seconds": 16.26
+    },
+    {
+      "month": "2022-02",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2022-02.parquet",
+      "bytes": 407154284,
+      "sha256": "95ff2d3826128f28fa57a48677d1178ab156e185d98aabb88a27dc146ed35833",
+      "raw_rows": 16019283,
+      "kept_rows": 15987763,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 9.36,
+      "total_seconds": 17.5
+    },
+    {
+      "month": "2022-03",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2022-03.parquet",
+      "bytes": 471233716,
+      "sha256": "e2552b5a9876dd5d0d325a858f5dda95c5f37f34f1bc88b34e4aa59a79c034fe",
+      "raw_rows": 18453548,
+      "kept_rows": 18426696,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 13.68,
+      "total_seconds": 23.62
+    },
+    {
+      "month": "2022-04",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2022-04.parquet",
+      "bytes": 455549033,
+      "sha256": "da809cc7330e93adfaf8f8c7100156c6719ff22af3d2afcbdcfba4fd2a541ee3",
+      "raw_rows": 17752561,
+      "kept_rows": 17725975,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 9.79,
+      "total_seconds": 18.98
+    },
+    {
+      "month": "2022-05",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2022-05.parquet",
+      "bytes": 468565693,
+      "sha256": "c0d226af87f77ce7d00f8239ef48731435240aaaff24d3c5cb2a0fec2abb2c0d",
+      "raw_rows": 18157335,
+      "kept_rows": 18122893,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 10.22,
+      "total_seconds": 19.61
+    },
+    {
+      "month": "2022-06",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2022-06.parquet",
+      "bytes": 458193119,
+      "sha256": "26b66206345a899d4ba71c144d14c7d6c11c6d113d22b0fd9b460d058cc37039",
+      "raw_rows": 17780075,
+      "kept_rows": 17745676,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 12.95,
+      "total_seconds": 22.29
+    },
+    {
+      "month": "2022-07",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2022-07.parquet",
+      "bytes": 443730405,
+      "sha256": "529a76eba1b4a49198f474a6aacf823b8cc3d9b471cc0750461877a2a9107148",
+      "raw_rows": 17464619,
+      "kept_rows": 17436834,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 17.88,
+      "total_seconds": 27.31
+    },
+    {
+      "month": "2022-08",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2022-08.parquet",
+      "bytes": 436536084,
+      "sha256": "0f2ba11763db8b173a732737c0ebc8b3784ad1b6230ac92b936bef6198532e35",
+      "raw_rows": 17185687,
+      "kept_rows": 17152980,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 9.41,
+      "total_seconds": 18.66
+    },
+    {
+      "month": "2022-09",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2022-09.parquet",
+      "bytes": 458009813,
+      "sha256": "c92bb92de4cb78350e0dea4eb2157ddccca6fda44cd1504e61e47d0cc0764433",
+      "raw_rows": 17793551,
+      "kept_rows": 17763894,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 13.01,
+      "total_seconds": 23.17
+    },
+    {
+      "month": "2022-10",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2022-10.parquet",
+      "bytes": 495083481,
+      "sha256": "d52e73de31b807dd15aaeb688494e520720e987426a9f90f3bdbcb5a4d4be717",
+      "raw_rows": 19306090,
+      "kept_rows": 19271615,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.29,
+      "total_seconds": 21.87
+    },
+    {
+      "month": "2022-11",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2022-11.parquet",
+      "bytes": 464298215,
+      "sha256": "b2f572f97c5eed7f2c2f129ec097d4211ce11441ecf7122611320241ea1ae1ea",
+      "raw_rows": 18085896,
+      "kept_rows": 18060757,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 10.05,
+      "total_seconds": 20.05
+    },
+    {
+      "month": "2022-12",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2022-12.parquet",
+      "bytes": 503674188,
+      "sha256": "09c09c54e844db8efdefbd6d5a5c5a3f71ab43b9128edec0535fda6098c22398",
+      "raw_rows": 19665847,
+      "kept_rows": 19641380,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 13.52,
+      "total_seconds": 23.71
+    },
+    {
+      "month": "2023-01",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2023-01.parquet",
+      "bytes": 473816636,
+      "sha256": "cb066a3fe0770e44dde67cfc43e8b964b7b3ca7f2c90dc35d2d57cb7e41629b8",
+      "raw_rows": 18479031,
+      "kept_rows": 18458569,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 35.73,
+      "total_seconds": 45.33
+    },
+    {
+      "month": "2023-02",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2023-02.parquet",
+      "bytes": 458895583,
+      "sha256": "5a9f32bda414abcb0f04f2286ca8af5670ac9e535fdd86f2aa3840b71d62fdc2",
+      "raw_rows": 17960971,
+      "kept_rows": 17941895,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 12.98,
+      "total_seconds": 20.53
+    },
+    {
+      "month": "2023-03",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2023-03.parquet",
+      "bytes": 522484870,
+      "sha256": "57e607736d4460050e823acb1af82f9a23ed36382b131217fa56597f4f7c0f5a",
+      "raw_rows": 20413539,
+      "kept_rows": 20390072,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.43,
+      "total_seconds": 20.21
+    },
+    {
+      "month": "2023-04",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2023-04.parquet",
+      "bytes": 491826475,
+      "sha256": "edf8bfe4435fec30bc8830750834c570f597fc129e6a9b7779366280f4bed276",
+      "raw_rows": 19144903,
+      "kept_rows": 19126853,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.06,
+      "total_seconds": 19.31
+    },
+    {
+      "month": "2023-05",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2023-05.parquet",
+      "bytes": 513108369,
+      "sha256": "af892a2dd4262a9197a6ba84ed53ce8b27e0746106b67e8fe8f0b4ca7eabd2f3",
+      "raw_rows": 19847676,
+      "kept_rows": 19834924,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.13,
+      "total_seconds": 19.57
+    },
+    {
+      "month": "2023-06",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2023-06.parquet",
+      "bytes": 498799838,
+      "sha256": "cb78866e5a685db8733e2be8210d3f9498cef7e2aaa01086e88b363dfa825855",
+      "raw_rows": 19366619,
+      "kept_rows": 19353607,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.31,
+      "total_seconds": 19.56
+    },
+    {
+      "month": "2023-07",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2023-07.parquet",
+      "bytes": 492310857,
+      "sha256": "76a5e0b404a4ec0c2e70b2cf3f482fe64b117dc83602dcc4b31036e099347e55",
+      "raw_rows": 19132131,
+      "kept_rows": 19124057,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 10.91,
+      "total_seconds": 18.97
+    },
+    {
+      "month": "2023-08",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2023-08.parquet",
+      "bytes": 450263712,
+      "sha256": "1f657d06e9465217005104c594578100ab1b5c846f353efd87372f991709d6fd",
+      "raw_rows": 18322150,
+      "kept_rows": 18311274,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 9.91,
+      "total_seconds": 12.88
+    },
+    {
+      "month": "2023-09",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2023-09.parquet",
+      "bytes": 478067839,
+      "sha256": "3f3fb7b6f62bf1a7ed07bfd1af7a23be0f798d101f27b77331e9a52b4d4a10f4",
+      "raw_rows": 19851123,
+      "kept_rows": 19840562,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 10.78,
+      "total_seconds": 13.81
+    },
+    {
+      "month": "2023-10",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2023-10.parquet",
+      "bytes": 485826227,
+      "sha256": "fd577706331f37f6470945af6c268b27af036cf51eaa5689bc84481a1e0579f0",
+      "raw_rows": 20186330,
+      "kept_rows": 20178812,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 12.31,
+      "total_seconds": 15.34
+    },
+    {
+      "month": "2023-11",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2023-11.parquet",
+      "bytes": 464926008,
+      "sha256": "a48486cfb760c0839a8f7b507f3b89d5ac5fc5433c67233dcb6a89c91ea08e1c",
+      "raw_rows": 19269250,
+      "kept_rows": 19262747,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 10.59,
+      "total_seconds": 13.49
+    },
+    {
+      "month": "2023-12",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2023-12.parquet",
+      "bytes": 490453634,
+      "sha256": "ff23e07001de2ec2d2e44f82d748c3a2ec88efdc5df7532248248cca59cc0dd9",
+      "raw_rows": 20516297,
+      "kept_rows": 20507937,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.14,
+      "total_seconds": 14.7
+    },
+    {
+      "month": "2024-01",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2024-01.parquet",
+      "bytes": 472757547,
+      "sha256": "9897de352aa52cea36b70348cc6721b8d4494327ce39c85f0dba83d86ecaa098",
+      "raw_rows": 19663930,
+      "kept_rows": 19650161,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 10.84,
+      "total_seconds": 13.84
+    },
+    {
+      "month": "2024-02",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2024-02.parquet",
+      "bytes": 462475428,
+      "sha256": "54bafa7bcf3f06e7833fcbccf7ef158eb793a72ee1c4bb8bf080e56ae71a15d6",
+      "raw_rows": 19359148,
+      "kept_rows": 19344887,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 13.33,
+      "total_seconds": 16.35
+    },
+    {
+      "month": "2024-03",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2024-03.parquet",
+      "bytes": 507940560,
+      "sha256": "ff25b93f890f889637963b749d0839ec5a15f075d23ea5297b3312ed9a10d6d9",
+      "raw_rows": 21280788,
+      "kept_rows": 21273907,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.41,
+      "total_seconds": 14.58
+    },
+    {
+      "month": "2024-04",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2024-04.parquet",
+      "bytes": 476115643,
+      "sha256": "1493f3edd0486bf6c3f949cb5a66ec49e9d04f7ad6e94f85626f16aa6fec7260",
+      "raw_rows": 19733038,
+      "kept_rows": 19727006,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.05,
+      "total_seconds": 13.99
+    },
+    {
+      "month": "2024-05",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2024-05.parquet",
+      "bytes": 498575918,
+      "sha256": "152db11cbc95a796fea0b9cb26184b3c4cfad181fa9d7488d4c61f06c521b4b5",
+      "raw_rows": 20704538,
+      "kept_rows": 20698635,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.43,
+      "total_seconds": 14.44
+    },
+    {
+      "month": "2024-06",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2024-06.parquet",
+      "bytes": 484417715,
+      "sha256": "4772ee1ab01e639a5db74169b49049f74f0f46a0c925fd3b67f9f068221f6373",
+      "raw_rows": 20123226,
+      "kept_rows": 20116886,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.1,
+      "total_seconds": 14.12
+    },
+    {
+      "month": "2024-07",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2024-07.parquet",
+      "bytes": 468437522,
+      "sha256": "3a511a8df72441d72b32f6ce9829e29f5d61666e37f1b40b8d352cc5830c81e1",
+      "raw_rows": 19182934,
+      "kept_rows": 19176125,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 13.29,
+      "total_seconds": 16.17
+    },
+    {
+      "month": "2024-08",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2024-08.parquet",
+      "bytes": 465991646,
+      "sha256": "99fd2913d2c8935e4c1d166f229290a90971b6564c490a8ba2a257de9e08fae2",
+      "raw_rows": 19128392,
+      "kept_rows": 19121520,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 10.03,
+      "total_seconds": 13.24
+    },
+    {
+      "month": "2024-09",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2024-09.parquet",
+      "bytes": 466470118,
+      "sha256": "d2d26d608a775555128a2b435d375f5d25d3d8125b688c57fc60d5a0fb5a1d3b",
+      "raw_rows": 19209788,
+      "kept_rows": 19202462,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 13.22,
+      "total_seconds": 16.37
+    },
+    {
+      "month": "2024-10",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2024-10.parquet",
+      "bytes": 485102359,
+      "sha256": "8ee625798a6543148c3a3e33df5e2cf44acb17af904dbfff925d1cd4f077afb5",
+      "raw_rows": 20028282,
+      "kept_rows": 20005351,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 22.91,
+      "total_seconds": 26.88
+    },
+    {
+      "month": "2024-11",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2024-11.parquet",
+      "bytes": 480228052,
+      "sha256": "cc3547280a9ff6edb4eaa467a3aa0ea2a372fca746e3e733d1ea3152d56daed3",
+      "raw_rows": 19987533,
+      "kept_rows": 19979636,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.36,
+      "total_seconds": 14.8
+    },
+    {
+      "month": "2024-12",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2024-12.parquet",
+      "bytes": 507534115,
+      "sha256": "dcf0885722bc76ab7b5f22a23b784513caf7e7c2b23381ed854610c436c48887",
+      "raw_rows": 21068851,
+      "kept_rows": 21027839,
+      "missing_zero_columns": [
+        "cbd_congestion_fee"
+      ],
+      "download_seconds": 11.67,
+      "total_seconds": 16.22
+    },
+    {
+      "month": "2025-01",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2025-01.parquet",
+      "bytes": 491076642,
+      "sha256": "fcdef276f4e9887f2beab30590165cdea74caef50a1313d71fa01ff6afacca3a",
+      "raw_rows": 20405666,
+      "kept_rows": 20382899,
+      "missing_zero_columns": [],
+      "download_seconds": 16.16,
+      "total_seconds": 20.75
+    },
+    {
+      "month": "2025-02",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2025-02.parquet",
+      "bytes": 461632254,
+      "sha256": "2077477d4d841b8ec40a3839b629f08f45f6802ca016adc1e01d6d8cffd2cf23",
+      "raw_rows": 19339461,
+      "kept_rows": 19332686,
+      "missing_zero_columns": [],
+      "download_seconds": 12.99,
+      "total_seconds": 17.65
+    },
+    {
+      "month": "2025-03",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2025-03.parquet",
+      "bytes": 501783767,
+      "sha256": "671399467732b00653307525421bfc6004e6a45be1fadd5e4b8fa3d11da22043",
+      "raw_rows": 20536879,
+      "kept_rows": 20467644,
+      "missing_zero_columns": [],
+      "download_seconds": 15.03,
+      "total_seconds": 18.82
+    },
+    {
+      "month": "2025-04",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2025-04.parquet",
+      "bytes": 487219586,
+      "sha256": "d1edcd63ba37e87e0c6fda58cfc12352c0aa9ad9ad88dd2992094bc1ecd1e3b1",
+      "raw_rows": 19753983,
+      "kept_rows": 19734646,
+      "missing_zero_columns": [],
+      "download_seconds": 14.17,
+      "total_seconds": 18.16
+    },
+    {
+      "month": "2025-05",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2025-05.parquet",
+      "bytes": 517386544,
+      "sha256": "424be0dcc1248fd83dbf235805f2d475e19196ad64dc2e1d2e9c7b771851585a",
+      "raw_rows": 21091193,
+      "kept_rows": 21084291,
+      "missing_zero_columns": [],
+      "download_seconds": 14.92,
+      "total_seconds": 19.3
+    },
+    {
+      "month": "2025-06",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2025-06.parquet",
+      "bytes": 490819474,
+      "sha256": "f26bbe980f037a15f47f40da4ad7102b7aaebe0c9a8f3c1f6d058c6652007c88",
+      "raw_rows": 19868009,
+      "kept_rows": 19848794,
+      "missing_zero_columns": [],
+      "download_seconds": 14.55,
+      "total_seconds": 18.19
+    },
+    {
+      "month": "2025-07",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2025-07.parquet",
+      "bytes": 487222980,
+      "sha256": "cae4e3d120f9af1a7369dad915dfe9beadda914b08a38ee8c045a4d09f085712",
+      "raw_rows": 19653012,
+      "kept_rows": 19634225,
+      "missing_zero_columns": [],
+      "download_seconds": 19.47,
+      "total_seconds": 23.14
+    },
+    {
+      "month": "2025-08",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2025-08.parquet",
+      "bytes": 479574607,
+      "sha256": "e2efc965d31bd10f23224f5e007b463d037c45fbdaa6ded23c5deab01ec8d3b7",
+      "raw_rows": 19271461,
+      "kept_rows": 19079448,
+      "missing_zero_columns": [],
+      "download_seconds": 15.15,
+      "total_seconds": 19.67
+    },
+    {
+      "month": "2025-09",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2025-09.parquet",
+      "bytes": 480851341,
+      "sha256": "1744115e019e2f6e1e41214afb33f087a303620834c42021c642c5afca042d6f",
+      "raw_rows": 19434641,
+      "kept_rows": 19426375,
+      "missing_zero_columns": [],
+      "download_seconds": 14.08,
+      "total_seconds": 17.65
+    },
+    {
+      "month": "2025-10",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2025-10.parquet",
+      "bytes": 518486063,
+      "sha256": "5610c7bcbe2aadd14761858eb7b94d3b01a2ee03d299c05f3575f72357f5b81a",
+      "raw_rows": 21308701,
+      "kept_rows": 21270344,
+      "missing_zero_columns": [],
+      "download_seconds": 15.69,
+      "total_seconds": 19.62
+    },
+    {
+      "month": "2025-11",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2025-11.parquet",
+      "bytes": 507485661,
+      "sha256": "a17ebafe3b6b1927f9b1b4cfc9062a328867b79a871ce762bfb16a841024f1e0",
+      "raw_rows": 20818240,
+      "kept_rows": 20808716,
+      "missing_zero_columns": [],
+      "download_seconds": 15.42,
+      "total_seconds": 19.46
+    },
+    {
+      "month": "2025-12",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2025-12.parquet",
+      "bytes": 535754793,
+      "sha256": "897e541b2a998df118dc5cc2b4182b74d14f6d0f2a950ef2bac3a8924ce6e95f",
+      "raw_rows": 22108438,
+      "kept_rows": 22067693,
+      "missing_zero_columns": [],
+      "download_seconds": 16.87,
+      "total_seconds": 21.54
+    },
+    {
+      "month": "2026-01",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2026-01.parquet",
+      "bytes": 505868728,
+      "sha256": "d7cdc852912fd7864166448a93cb40d7d6b09f136057b10ae31e9bb53d59c6f2",
+      "raw_rows": 20940373,
+      "kept_rows": 20834257,
+      "missing_zero_columns": [],
+      "download_seconds": 15.01,
+      "total_seconds": 18.73
+    },
+    {
+      "month": "2026-02",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2026-02.parquet",
+      "bytes": 476780037,
+      "sha256": "7f3c6737ed9a65884c9867ac2b8e05e358e56b42ecaf6d43f8009d40a9fce5c2",
+      "raw_rows": 19875686,
+      "kept_rows": 19866179,
+      "missing_zero_columns": [],
+      "download_seconds": 14.43,
+      "total_seconds": 18.03
+    },
+    {
+      "month": "2026-03",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2026-03.parquet",
+      "bytes": 532615621,
+      "sha256": "0f63d67cb9253b5a818cc4a1b2ddaf3a79955a6bf31c7577c53ff97fa040a262",
+      "raw_rows": 22058358,
+      "kept_rows": 22044488,
+      "missing_zero_columns": [],
+      "download_seconds": 11.71,
+      "total_seconds": 15.97
+    },
+    {
+      "month": "2026-04",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2026-04.parquet",
+      "bytes": 509865567,
+      "sha256": "15525aea9f82d55b885c6053414054e63f4c9abb3cdc44d78120a77d3aecc92b",
+      "raw_rows": 20995953,
+      "kept_rows": 20966030,
+      "missing_zero_columns": [],
+      "download_seconds": 11.96,
+      "total_seconds": 15.69
+    },
+    {
+      "month": "2026-05",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2026-05.parquet",
+      "bytes": 537576484,
+      "sha256": "e2b633a5be2280da537b4138f5bcb198eb04a6d3c2ef6bf7bd647f5b2c995287",
+      "raw_rows": 22125744,
+      "kept_rows": 22107936,
+      "missing_zero_columns": [],
+      "download_seconds": 12.28,
+      "total_seconds": 16.7
+    },
+    {
+      "month": "2026-06",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2026-06.parquet",
+      "bytes": 506800012,
+      "sha256": "300f8dccfae9025383deeec3c1daecf6c16653615dbdcfec8d77a76804314f48",
+      "raw_rows": 20775868,
+      "kept_rows": 20759206,
+      "missing_zero_columns": [],
+      "download_seconds": 11.36,
+      "total_seconds": 15.11
+    },
+    {
+      "month": "2026-07",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2026-07.parquet",
+      "bytes": 511176663,
+      "sha256": "8da280d9d23813aae02a6e1d1d1caa8b96eb5e8d38efcbc9a570faf1e418f5a8",
+      "raw_rows": 20921249,
+      "kept_rows": 20896777,
+      "missing_zero_columns": [],
+      "download_seconds": 11.52,
+      "total_seconds": 15.2
+    },
+    {
+      "month": "2026-08",
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2026-08.parquet",
+      "bytes": 502392134,
+      "sha256": "0015770b14420035b9c7708091b765eb59d70f25cd7d663d2462194208a198f6",
+      "raw_rows": 20493480,
+      "kept_rows": 20485569,
+      "missing_zero_columns": [],
+      "download_seconds": 13.59,
+      "total_seconds": 17.97
+    }
+  ],
+  "source": "NYC TLC High Volume FHV trip records",
+  "zone_url": "https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv"
+}
