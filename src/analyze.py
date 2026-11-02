@@ -239,7 +239,7 @@ def build_narratives(numbers, distance, airport):
         {"id": "short", "en": f"For Uber trips up to 2 miles in the latest 12 months, gross take rate was {format_pct(s['take_rate'])}; driver pay exceeded base fare on {format_pct(s['negative_take_share'])} of trips.",
          "zh": f"最近 12 个月，Uber 不超过 2 英里的订单毛额抽成率为 {format_pct(s['take_rate'])}；{format_pct(s['negative_take_share'])} 的订单司机收入高于基础车费。"},
         {"id": "congestion", "en": f"In matched Feb-Dec 2025 versus 2024 months, Uber's zone-linked speed changed {format_change(speed['zone_change'])}, versus {format_change(speed['other_change'])} elsewhere: a {speed['difference_in_changes']:+.1f} percentage-point descriptive gap.",
-         "zh": f"2025 年与 2024 年匹配的 2—12 月相比，Uber 区内关联订单速度变动 {format_change(speed['zone_change'])}，其他订单变动 {format_change(speed['other_change'])}，描述性差距为 {speed['difference_in_changes']:+.1f} 个百分点。"},
+         "zh": f"2025 年与 2024 年匹配的 2-12 月相比，Uber 区内关联订单速度变动 {format_change(speed['zone_change'])}，其他订单变动 {format_change(speed['other_change'])}，描述性差距为 {speed['difference_in_changes']:+.1f} 个百分点。"},
     ]
     memo = [
         {"title_en": "Test price changes against driver pay and retention", "title_zh": "定价试验同时看司机收入与留存",
@@ -352,6 +352,8 @@ docs/            # Standalone explorer, bilingual memo and source notes
 tests/           # Hand-written SQL and metric checks
 ```
 
+Independent project by Haoqi Luo. I chose the question, checked the data and results, and decided the conclusions. AI coding tools helped with the implementation.
+
 ---
 
 ## 中文
@@ -372,11 +374,11 @@ tests/           # Hand-written SQL and metric checks
 
 数据区间为 {data['first_month']} 至 {latest}，共 {data['coverage_months']} 个有数据月份。最近 12 个月快照为 {data['recent_start']} 至 {data['recent_end']}。覆盖模式：**{sample_text}**；采样月份不能当作全年总量。逐月下载、用 DuckDB 汇总、删除原始文件，支持断点续跑。
 
-保留基础车费大于零、司机收入非负、距离在 (0,100] 英里、时长 1—240 分钟且上车月份与文件一致的订单；等待时间仅纳入 0—60 分钟的有效记录。历史缺失的可选费用列按零处理。Uber/Lyft 对应 HV0003/HV0005，份额仅以这两家公司为分母。
+保留基础车费大于零、司机收入非负、距离在 (0,100] 英里、时长 1-240 分钟且上车月份与文件一致的订单；等待时间仅纳入 0-60 分钟的有效记录。历史缺失的可选费用列按零处理。Uber/Lyft 对应 HV0003/HV0005，份额仅以这两家公司为分母。
 
 毛额抽成＝基础车费－司机收入；抽成率＝合计抽成÷合计基础车费，不含小费、过路费、税费和附加费。先汇总再算比例；车费和司机收入增长比较名义平均每单金额。速度用总里程÷总行程小时，司机每单收入不是小时工资。机场单任一端为区域 1、132、138，包含 Newark。
 
-用 2025 年 2 月上车单数不少于 1,000、且超过 95% 订单被收 CBD 费用的曼哈顿区域识别收费区，共 {data['inferred_zone_count']} 个区域；任一端在该集合内即为区内关联订单，所以只穿过拥堵区的订单会被漏掉。跳过 2025 年 1 月，把 2025 年 2—12 月的可用月份与 2024 年同月比较；分别计算区内外变化，再比较增速差。它只是差中差思路的描述性对照，不能写成政策因果效果。UCLA 的 9% 与 20.7% 及本项目对应核对值均为两平台合计的总额比例，但清洗、无障碍车、纽约两端和拼车范围不同；其 50%/31% 增长使用中位数，本项目使用均值。原始行数核对及政策原文见[来源说明](docs/sources.md)。
+用 2025 年 2 月上车单数不少于 1,000、且超过 95% 订单被收 CBD 费用的曼哈顿区域识别收费区，共 {data['inferred_zone_count']} 个区域；任一端在该集合内即为区内关联订单，所以只穿过拥堵区的订单会被漏掉。跳过 2025 年 1 月，把 2025 年 2-12 月的可用月份与 2024 年同月比较；分别计算区内外变化，再比较增速差。它只是差中差思路的描述性对照，不能写成政策因果效果。UCLA 的 9% 与 20.7% 及本项目对应核对值均为两平台合计的总额比例，但清洗、无障碍车、纽约两端和拼车范围不同；其 50%/31% 增长使用中位数，本项目使用均值。原始行数核对及政策原文见[来源说明](docs/sources.md)。
 
 政策背景：拥堵区自 2025-01-05 对符合条件的网约车每单向乘客收取 $1.50；2026-03-03 法院撤销了受到挑战的联邦终止决定。2026-03-01 起，纽约市内非无障碍车辆的最低司机支付标准为每英里 $1.283 加每分钟 $0.681，已含利用率调整；本项目不把这一标准追溯应用到历史订单。
 
@@ -387,6 +389,8 @@ tests/           # Hand-written SQL and metric checks
 ### 如何运行与目录
 
 安装依赖后运行上方四段脚本命令即可重建，`python -m pytest` 执行小样本测试。目录说明见上表；清洗汇总与结果 CSV 均可直接检查。
+
+罗浩绮的独立项目。我确定问题，核对数据和结果，并决定结论；代码实现借助了 AI 工具。
 
 MIT License.
 """
